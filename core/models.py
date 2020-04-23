@@ -15,7 +15,7 @@ class Color(models.Model):
     )
 
     class Meta:
-        ordering = 'color_name'
+        ordering = ('color_name',)
 
     def __str__(self):
         return f'{self.color_name} (#{self.color_hex})'
