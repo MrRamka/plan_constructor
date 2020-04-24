@@ -1,13 +1,16 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
+from user.forms import RegistrationForm
+
 
 class SignUp(generic.CreateView):
-
-    form_class = UserCreationForm
-
+    """
+    Class-based view for Registration
+    """
+    form_class = RegistrationForm
     success_url = reverse_lazy('login')
+    template_name = 'user/signup.html'
 
-    template_name = 'signup.html'
+
