@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils.text import slugify
+
+from user.models import User
 
 
 class Color(models.Model):
@@ -26,10 +29,10 @@ class UserColor(Color):
     Model of custom user colors
     """
     pass
-    # color_author = models.ForeignKey(User, on_delete=models.CASCADE)
-    #
-    # def __str__(self):
-    #     return f'{self.color_author.__str__()} - {super().__str__()}'
+    color_author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.color_author.__str__()} - {super().__str__()}'
 
 
 class GraphPlanManager(models.Manager):
@@ -65,14 +68,18 @@ class Plan(models.Model):
         choices=TYPES
     )
     plan_date_creation = models.DateTimeField(auto_now_add=True)
-    # plan_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    plan_author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # Managers
     table_plan_objects = TablePlanManager()
     graph_plan_objects = GraphPlanManager()
 
-    # def __str__(self):
-    #     return f'{self.user.__str__()} - {self.plan_name} ({self.plan_version})'
+    def __str__(self):
+        return f'{self.plan_author.__str__()} - {self.plan_name} ({self.plan_version})'
+
+    def save(self, *args, **kwargs):
+        self.plan_slug = slugify(self.plan_name)
+        super(Plan, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ('plan_author', 'plan_slug', 'plan_version')

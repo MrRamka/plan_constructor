@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+# Table
+from table.models import Column, Cell
+
+admin.site.register(Column)
+admin.site.register(Cell)
