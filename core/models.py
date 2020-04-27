@@ -78,3 +78,19 @@ class Plan(models.Model):
         unique_together = ('plan_author', 'plan_slug', 'plan_version')
         verbose_name = 'Plan'
         verbose_name_plural = 'Plans'
+
+
+class PlanObject(models.Model):
+    """
+    Abstract plan object model
+    """
+    plan_object_name = models.CharField(max_length=50)
+    plan_object_color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    related_plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+    plan_object_priority = models.PositiveIntegerField()
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f'{self.related_plan.plan_type} - {self.plan_object_name}'
