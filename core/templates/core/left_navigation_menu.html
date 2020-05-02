@@ -30,12 +30,11 @@
             <div class="leftMenuItem selected"><i class="fas fa-align-justify"></i>
                 <a class="navigation" href="{% url 'table:to_user_table_list' %}">
                     Tables
-                </a></div>
+                </a>
+            </div>
         {% else %}
             <div class="leftMenuItem"><i class="fas fa-align-justify"></i>
-                <a href="{% url 'table:to_user_table_list' %}">
-                    Tables
-                </a></div>
+                <a href="{% url 'table:to_user_table_list' %}">Tables</a></div>
         {% endif %}
     </div>
 

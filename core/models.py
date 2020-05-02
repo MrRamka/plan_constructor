@@ -1,6 +1,7 @@
 import hashlib
 
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 
 from user.models import User
@@ -88,6 +89,12 @@ class Plan(models.Model):
         self.plan_slug = hashlib.md5(
             (self.plan_name + self.plan_author.get_full_name() + str(self.plan_version)).encode()).hexdigest()
         super(Plan, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        if self.plan_type == self.GRAPH_TYPE:
+            return ''
+        else:
+            return reverse('table:to_plan', args=(self.plan_slug,))
 
     class Meta:
         unique_together = ('plan_author', 'plan_slug', 'plan_version')
