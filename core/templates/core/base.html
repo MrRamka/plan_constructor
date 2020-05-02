@@ -1,0 +1,36 @@
+{% load static %}
+
+<html>
+<head>
+    {% block title %}
+        <title>Home</title>
+    {% endblock %}
+    {#    <link rel="stylesheet" type="text/css" href="{% static 'core/bootstrap.bundle.js' %}">#}
+    <script src="https://kit.fontawesome.com/81c65d2303.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}">
+</head>
+<body>
+
+<div id="container">
+    {% include 'core/left_navigation_menu.html' %}
+
+    {% block container %}
+
+    {% endblock %}
+
+</div>
+
+<script type='text/javascript'>
+    var cArrow = $cArrows('#mainBlock2').arrow('#edge1', '#edge2').arrow('#edge1', '#edge3').arrow('#edge1', '#edge5').arrow('#edge2', '#edge4').arrow('#edge4', '#edge7').arrow('#edge4', '#edge6');
+</script>
+</body>
