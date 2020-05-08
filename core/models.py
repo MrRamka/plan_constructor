@@ -1,3 +1,5 @@
+import hashlib
+
 from django.db import models
 from django.utils.text import slugify
 
@@ -57,7 +59,12 @@ class Plan(models.Model):
     )
 
     plan_name = models.CharField(max_length=140)
-    plan_slug = models.SlugField(max_length=140, db_index=True)
+    plan_slug = models.SlugField(
+        max_length=140,
+        db_index=True,
+        null=True,
+        blank=True
+    )
     plan_description = models.CharField(
         max_length=200,
         blank=True,
@@ -78,7 +85,8 @@ class Plan(models.Model):
         return f'{self.plan_author.__str__()} - {self.plan_name} ({self.plan_version})'
 
     def save(self, *args, **kwargs):
-        self.plan_slug = slugify(self.plan_name)
+        self.plan_slug = hashlib.md5(
+            (self.plan_name + self.plan_author.get_full_name() + str(self.plan_version)).encode()).hexdigest()
         super(Plan, self).save(*args, **kwargs)
 
     class Meta:
