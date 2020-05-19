@@ -9,7 +9,7 @@ class TableListView(ListView, LoginRequiredMixin):
     template_name = 'table/table_list.html'
 
     def get_queryset(self):
-        return Plan.table_plan_objects.filter(plan_author=self.request.user)
+        return Plan.table_plan_objects.filter(author=self.request.user)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)

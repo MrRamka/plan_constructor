@@ -1,16 +1,16 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-    {{ plan.plan_name }}
+    {{ plan.name }}
 {% endblock %}
 
 {% block container %}
     <div class="main" id="main">
         <div class="mainBlock1">
             <div style="position: absolute; top: 70%; transform: translateY(-70%);">
-                <h1>Name: {{ plan.plan_name }}</h1>
-                <p>Description: {{ plan.plan_description }}</p>
-                <p>Version: {{ plan.plan_version }}</p>
+                <h1>Name: {{ plan.name }}</h1>
+                <p>Description: {{ plan.description }}</p>
+                <p>Version: {{ plan.version }}</p>
             </div>
         </div>
         <div class="mainBlock2" style="zoom:100%;">

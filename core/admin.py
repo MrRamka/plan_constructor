@@ -9,4 +9,5 @@ admin.site.register(UserColor)
 
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ['plan_author', 'plan_name', 'plan_type', 'plan_version', 'plan_date_creation']
+    list_display = ['author', 'name', 'type', 'version', 'date_creation']
+

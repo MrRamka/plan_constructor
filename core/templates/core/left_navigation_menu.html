@@ -3,56 +3,43 @@
         <h1>{{ request.user.get_full_name }}</h1>
     </div>
     <div class="LeftMenuBlock2">
-        {% if plan_type_all %}
-            <div class="leftMenuItem selected"><i class="fab fa-accusoft"></i>
-                <a href="">
-                    All Plans
-                </a></div>
-        {% else %}
-            <div class="leftMenuItem"><i class="fab fa-accusoft"></i>
-                <a href="">
-                    All Plans
-                </a></div>
-        {% endif %}
+        <div class="leftMenuItem {% if plan_type_all %}selected{% endif %}"><i class="fab fa-accusoft"></i>
+            <a href="">
+                All Plans
+            </a>
+        </div>
 
-        {% if plan_type_graph %}
-            <div class="leftMenuItem selected"><i class="fas fa-chart-line"></i>
-                <a class="navigation" href="">
-                    Graphs
-                </a></div>
-        {% else %}
-            <div class="leftMenuItem"><i class="fas fa-chart-line"></i>
-                <a href="">
-                    Graphs
-                </a></div>
-        {% endif %}
-        {% if plan_type_table %}
-            <div class="leftMenuItem selected"><i class="fas fa-align-justify"></i>
-                <a class="navigation" href="{% url 'table:to_user_table_list' %}">
-                    Tables
-                </a>
+
+        <div class="leftMenuItem {% if plan_type_graph %} selected{% endif %}"><i class="fas fa-chart-line"></i>
+            <a class="navigation" href="{% url 'graph:to_user_graph_list' %}">
+                Graphs
+            </a>
+        </div>
+
+
+        <a class="navigation" href="{% url 'table:to_user_table_list' %}">
+            <div class="leftMenuItem {% if plan_type_table %} selected {% endif %}"><i class="fas fa-align-justify"></i>
+                {#                <a class="navigation" href="{% url 'table:to_user_table_list' %}">#}
+                Tables
+                {#                </a>#}
             </div>
-        {% else %}
-            <div class="leftMenuItem"><i class="fas fa-align-justify"></i>
-                <a href="{% url 'table:to_user_table_list' %}">Tables</a></div>
-        {% endif %}
+        </a>
     </div>
 
+
     <div class="LeftMenuBlock3">
-        {% if settings %}
-            <div class="leftMenuItem selected"><i class="fas fa-cog"></i>
-                <a href="">
-                    Settings
-                </a></div>
-        {% else %}
-            <div class="leftMenuItem"><i class="fas fa-cog"></i>
-                <a href="">
-                    Settings
-                </a></div>
-        {% endif %}
+
+        <div class="leftMenuItem {% if settings %} selected {% endif %}"><i class="fas fa-cog"></i>
+            <a href="">
+                Settings
+            </a>
+        </div>
+
         <div class="leftMenuItem"><i class="fas fa-sign-out-alt"></i>
             <a href="">
                 Log out
-            </a></div>
+            </a>
+        </div>
+
     </div>
 </div>

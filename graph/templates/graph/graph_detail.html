@@ -1,51 +1,68 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block title %}
-    {{ plan.plan_name }}
+    {{ plan.name }}
 {% endblock %}
 
 {% block container %}
     <div class="main" id="main">
         <div class="mainBlock1">
             <div style="position: absolute; top: 70%; transform: translateY(-70%);">
-                <h1>Name: {{ plan.plan_name }}</h1>
-                <p>Description: {{ plan.plan_description }}</p>
-                <p>Version: {{ plan.plan_version }}</p>
+                <h1>Name: {{ plan.name }}</h1>
+                <p>Description: {{ plan.description }}</p>
+                <p>Version: {{ plan.version }}</p>
             </div>
         </div>
-        <div class="mainBlock2" style="zoom:100%;">
-
-            <div id="zoomIn"
-                 style="margin-top:1em; position:absolute; margin-left:1em; font-size:1.2em; color:#9d9d9d; z-index:103;">
-                <i class="fas fa-search-plus"></i></div>
-            <div id="zoomOut"
-                 style="margin-top:3em; position:absolute; margin-left:1em; font-size:1.2em; color:#9d9d9d; z-index:103">
-                <i class="fas fa-search-minus"></i></div>
-            <div>
 
 
-                <script>
-                    let zoomInButton = document.getElementById("zoomIn");
-                    zoomInButton.addEventListener("click", function () {
-                        let element = document.getElementById('mainBlock2'),
-                            style = window.getComputedStyle(element),
-                            zoom = style.getPropertyValue('zoom');
-                        zoom = zoom * 1.08;
-                        document.getElementById("mainBlock2").style.zoom = zoom;
-                    });
+        {#        <div class="mainBlock2" style="zoom:1;">#}
+        {##}
+        {#        #}
+        {#    #}
+        {#            <div id="zoomIn"#}
+        {#                 style="margin-top:1em; position:absolute; margin-left:1em; font-size:1.2em; color:#9d9d9d; z-index:103;">#}
+        {#                <i class="fas fa-search-plus"></i></div>#}
+        {#            <div id="zoomOut"#}
+        {#                 style="margin-top:3em; position:absolute; margin-left:1em; font-size:1.2em; color:#9d9d9d; z-index:103">#}
+        {#                <i class="fas fa-search-minus"></i></div>#}
+        {##}
+        {#            <div class="graph-block" id="graph-surface" style="z-index:101;">#}
+        {# Table #}
+        {#                {% for vertex in vertices %}#}
+        {#                    <div class="vertex" data-color="{{ vertex.color.hex }}"#}
+        {#                         id="vertex_{{ vertex.id }}">{{ vertex.name }}</div>#}
+        {#                {% endfor %}#}
+        {##}
+        {##}
+        {##}
+        {##}
+        {# TODO Move scipt #}
+        {#                <script>#}
+        {#                    $('#zoomIn').click(function () {#}
+        {#                        let element = $('.graph-block');#}
+        {#                        let zoom = element.css('zoom');#}
+        {#                        zoom = zoom * 1.05;#}
+        {#                        $(element).css("zoom", zoom)#}
+        {#                    });#}
+        {##}
+        {##}
+        {#                    $('#zoomOut').click(function () {#}
+        {#                        let element = $('.graph-block');#}
+        {#                        let zoom = element.css('zoom');#}
+        {#                        zoom = zoom * 0.95;#}
+        {#                        $(element).css("zoom", zoom)#}
+        {#                    });#}
+        {#                </script>#}
+        {#            </div>#}
+        {#        </div>#}
 
-                    let zoomOutButton = document.getElementById("zoomOut");
-                    zoomOutButton.addEventListener("click", function () {
-                        let element = document.getElementById('mainBlock2'),
-                            style = window.getComputedStyle(element),
-                            zoom = style.getPropertyValue('zoom');
-                        zoom = zoom * 0.92;
-                        document.getElementById("mainBlock2").style.zoom = zoom;
-                    });
-                </script>
 
-            </div>
+        <div class="mainBlock2" id="cy">
+
+
         </div>
+
+
         <div class="mainBlock3">
             <div style="position: absolute;
     top: 50%;
@@ -59,5 +76,114 @@
     </div>
 
     {% include 'graph/includes/right_navigation_menu.html' %}
+    <script src="{% static 'core/arrows.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let vertices = $(".vertex");
+            vertices.draggable();
+
+            vertices.each(function () {
+                $(this).css('background', '#' + $(this).attr('data-color'))
+            });
+
+
+            {#let cArrow = $cArrows('#graph-surface');#}
+            {#cArrow.arrow('#vertex_1', '#vertex_2');#}
+            {#let arrow = $cArrows('#graph-surface')#}
+            {#{% for edge in edges %}#}
+            {#    .arrow('#vertex_{{ edge.start_vertex.id }}', '#vertex_{{ edge.end_vertex.id }}')#}
+            {#{% endfor %};#}
+
+            {#let isStarted = false;#}
+            {#let prevId = null;#}
+            {#$('.vertex').click(function () {#}
+            {#    let thisId = $(this).attr('id');#}
+            {#    $("#name").val($(this).text());#}
+            {##}
+            {##}
+            {#    if (isStarted) {#}
+            {#        let arrow = $cArrows('#graph-surface').arrow('#' + prevId, '#' + thisId);#}
+            {#        alert();#}
+            {#        isStarted = false;#}
+            {#        prevId = thisId#}
+            {#    } else {#}
+            {#        prevId = thisId;#}
+            {#        isStarted = true;#}
+            {#    }#}
+            {# });#}
+
+        })
+    </script>
+
+    <script type="text/javascript">
+        let cy = cytoscape({
+
+                container: $('#cy'), // container to render in
+
+                elements: [
+
+                    {% for vertex in vertices %}
+                        {
+                            data: {
+                                id: '{{ vertex.id }}',
+                                label: '{{ vertex.name }}',
+                                classes: 'vertex_{{ vertex.id }}'
+
+                            }
+                        },
+
+                    {% endfor %}
+
+                    {% for edge in edges %}
+                        {
+                            data: {
+                                id: '{{edge.start_vertex.id}}_{{ edge.end_vertex.id }}',
+                                source: '{{edge.start_vertex.id}}',
+                                target: '{{ edge.end_vertex.id }}'
+                            }
+                        },
+                    {% endfor %}
+
+                ],
+
+
+                style: cytoscape.stylesheet()
+                {% for vertex in vertices %}
+                    .selector('node[id = "{{ vertex.id }}" ]')
+                    .css({
+                    'background-color': '#{{vertex.color.hex}}',
+                    'shape': 'round-rectangle',
+                    'width': 150,
+                    'height': 50,
+                    'label': 'data(label)',
+                    "text-valign": "center",
+                    "text-halign": "center"
+                })
+                {% endfor %}
+
+                    .selector('edge')
+                    .css({
+                        'width': 3,
+                        'line-color': '#0984e3',
+                        'target-arrow-color': '#0984e3',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'taxi'
+                    })
+                    .selector(':selected')
+                    .css({
+                        'border-width': '3',
+                        'border-color': '#0984e3',
+                        'border-style': 'solid',
+                    })
+                ,
+
+                layout: {
+                    name: 'grid',
+                    rows: 3
+                }
+
+            })
+        ;
+    </script>
 
 {% endblock %}

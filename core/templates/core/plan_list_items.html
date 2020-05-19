@@ -5,7 +5,7 @@
         {# TODO add colors #}
         {% for plan in object_list %}
             <div class="card-block-container">
-                <div class="card-block-header"><h5>{{ plan.plan_name }} (v. {{ plan.plan_version }})</h5></div>
+                <div class="card-block-header"><h5>{{ plan.name }} (v. {{ plan.version }})</h5></div>
                 <a href="{{ plan.get_absolute_url }}">
                     <div class="card-block"></div>
                 </a>
