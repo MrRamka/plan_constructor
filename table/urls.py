@@ -1,9 +1,10 @@
 from django.conf.urls import url
+from django.urls import path
 
-from table.views import TableListView
+from table.views import TableListView, TableDetailView
 
 app_name = 'table'
 urlpatterns = [
-    url('user-list/', TableListView.as_view(), name='to_user_table_list'),
-
+    path('list/', TableListView.as_view(), name='to_user_table_list'),
+    path('<hash>/', TableDetailView.as_view(), name='to_plan')
 ]

@@ -1,0 +1,273 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}
+    {{ plan.name }}
+{% endblock %}
+
+{% block container %}
+    <div class="main" id="main">
+        <div class="mainBlock1">
+            <div style="position: absolute; top: 70%; transform: translateY(-70%);">
+                <h1 id="plan-name" data-id="{{ plan.id }}">Name: {{ plan.name }}</h1>
+                <p>Description: {{ plan.description }}</p>
+                <p>Version: {{ plan.version }}</p>
+                <p>
+                    <button type="button" class="btn btn-primary" id="add-node"><i class="fas fa-plus"></i> &nbsp; Add
+                        node
+                    </button>
+                    <button class="btn btn-success" id="start">Start on selected</button>
+                    <button class="btn btn-warning" id="draw-on">Draw mode on</button>
+                    <button class="btn btn-warning" id="draw-off">Draw mode off</button>
+                    <button class="btn btn-danger" id="delete" disabled>Delete edge</button>
+
+                </p>
+            </div>
+        </div>
+
+        <div class="mainBlock2" id="cy">
+        </div>
+
+
+        <div class="mainBlock3">
+            <div style="position: absolute;
+    top: 50%;
+    transform: translateY(-50%); right:6em;">
+                <button type="button" style="padding-left:1.5em; padding-right:1.5em;" class="btn btn-primary">Save
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+
+    {% include 'graph/includes/right_navigation_menu.html' %}
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            let cy = cytoscape({
+
+                container: $('#cy'), // container to render in
+
+                elements: [
+
+                    {% for vertex in vertices %}
+                        {
+                            data: {
+                                id: '{{ vertex.id }}',
+                                label: '{{ vertex.name }}',
+                                classes: 'vertex_{{ vertex.id }}',
+                                color: '#{{ vertex.color.hex }}',
+                                priority: '{{ vertex.priority }}',
+
+                            }
+                        },
+
+                    {% endfor %}
+
+                    {% for edge in edges %}
+                        {
+                            data: {
+                                id: '{{edge.start_vertex.id}}_{{ edge.end_vertex.id }}',
+                                source: '{{edge.start_vertex.id}}',
+                                target: '{{ edge.end_vertex.id }}'
+                            }
+                        },
+                    {% endfor %}
+
+                ],
+
+
+                style: cytoscape.stylesheet()
+
+                    .selector('node')
+                    .css({
+                        'background-color': 'data(color)',
+                        'shape': 'round-rectangle',
+                        'width': 150,
+                        'height': 50,
+                        'label': 'data(label)',
+                        "text-valign": "center",
+                        "text-halign": "center"
+                    })
+                    .selector('edge')
+                    .css({
+                        'width': 3,
+                        'line-color': '#0984e3',
+                        'target-arrow-color': '#0984e3',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'taxi'
+                    })
+                    .selector(':selected')
+                    .css({
+                        'border-width': '3',
+                        'border-color': '#0984e3',
+                        'border-style': 'solid',
+                    })
+                    .selector('edge:selected')
+                    .css({
+                        'line-color': '#d63031',
+                    })
+                    .selector('.eh-handle')
+                    .css({
+                        'background-color': '#d63031',
+                        'width': 12,
+                        'height': 12,
+                        'shape': 'ellipse',
+                        'overlay-opacity': 0,
+                        'border-width': 12, // makes the handle easier to hit
+                        'border-opacity': 0
+                    })
+                    .selector('.eh-hover')
+                    .css({
+                        'border-width': '3',
+                        'border-color': '#0984e3',
+                        'border-style': 'solid',
+                    })
+                    .selector('.eh-source')
+                    .css({
+                        'border-width': 2,
+                        'border-color': '#d63031'
+                    })
+                    .selector('.eh-target')
+                    .css({
+                        'border-width': 2,
+                        'border-color': '#d63031'
+                    })
+                    .selector('.eh-preview, .eh-ghost-edge')
+                    .css({
+                        {#'background-color': 'red',#}
+                        'line-color': 'red',
+                        'target-arrow-color': '#d63031',
+                        'source-arrow-color': '#d63031'
+                    })
+                    .selector('.eh-ghost-edge.eh-preview-active')
+                    .css({
+                        'opacity': 0
+                    })
+                ,
+
+                layout: {
+                    name: 'grid',
+                    rows: 3
+                }
+
+            });
+
+            // Ajax setup
+            function getCookie(name) {
+                let cookieValue = null;
+                let i = 0;
+                if (document.cookie && document.cookie !== '') {
+                    let cookies = document.cookie.split(';');
+                    for (i; i < cookies.length; i++) {
+                        let cookie = jQuery.trim(cookies[i]);
+// Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            let csrftoken = getCookie('csrftoken');
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            $.ajaxSetup({
+                crossDomain: false, // obviates need for sameOrigin test
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+            //end setup
+
+            cy.on('tap', 'node', function (evt) {
+                let node = evt.target;
+                let label = node.data('label');
+                {# ToDo change node lable #}
+                $("#name").val(label);
+
+                let colorHex = node.data('color');
+
+                $('#colorsSelect option[data-color=' + colorHex + ']').prop('selected', true);
+
+                let priority = node.data('priority');
+                $('#priority').val(priority);
+
+            });
+
+
+            cy.on('tap', 'edge', function (event) {
+                let edge = event.target;
+                let deleteButton = $('#delete');
+                deleteButton.removeAttr('disabled');
+                deleteButton.click(function () {
+                    cy.remove(edge);
+                    deleteButton.attr('disabled', '');
+                    {# TODO: ajax delete edge method #}
+                });
+
+            });
+
+
+            let eh = cy.edgehandles({
+                snap: true
+            });
+
+            $('#add-node').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '{% url 'graph:add_node' %}',
+                    method: 'POST',
+
+                    data: {
+                        'plan_id': $('#plan-name').attr('data-id')
+                    },
+                    success: function (d) {
+                        let name = d['v_name'];
+                        let id = d['v_id'];
+                        let color = d['v_color'];
+                        let priority = d['v_priority'];
+
+                        cy.add({
+                            group: 'nodes',
+                            data: {
+                                id: id,
+                                label: name,
+                                classes: 'vertex_' + id,
+                                color: '#' + color,
+                                priority: priority,
+                            },
+                            position: {x: 200, y: 200}
+
+                        });
+                    },
+                    error: function (d) {
+                    }
+                });
+
+            });
+
+            $('#draw-on').click(function () {
+                eh.enableDrawMode();
+            });
+            $('#draw-off').click(function () {
+                eh.disableDrawMode();
+            });
+            $('#start').click(function () {
+                eh.start(cy.$('node:selected'));
+            });
+
+        });
+    </script>
+
+{% endblock %}

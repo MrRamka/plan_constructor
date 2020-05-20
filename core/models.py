@@ -1,6 +1,8 @@
 import hashlib
 
 from django.db import models
+from django.db.models.manager import BaseManager, Manager
+from django.urls import reverse
 from django.utils.text import slugify
 
 from user.models import User
@@ -11,19 +13,19 @@ class Color(models.Model):
     Base color model
     """
     # String color in hex
-    color_hex = models.CharField(max_length=6)
-    color_name = models.CharField(max_length=20)
-    color_description = models.CharField(
+    hex = models.CharField(max_length=6)
+    name = models.CharField(max_length=20)
+    description = models.CharField(
         max_length=100,
         null=True,
         blank=True
     )
 
     class Meta:
-        ordering = ('color_name',)
+        ordering = ('name',)
 
     def __str__(self):
-        return f'{self.color_name} (#{self.color_hex})'
+        return f'{self.name} (#{self.hex})'
 
 
 class UserColor(Color):
@@ -39,12 +41,12 @@ class UserColor(Color):
 
 class GraphPlanManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(plan_type=Plan.GRAPH_TYPE)
+        return super().get_queryset().filter(type=Plan.GRAPH_TYPE)
 
 
 class TablePlanManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(plan_type=Plan.TABLE_TYPE)
+        return super().get_queryset().filter(type=Plan.TABLE_TYPE)
 
 
 class Plan(models.Model):
@@ -58,39 +60,46 @@ class Plan(models.Model):
         (TABLE_TYPE, 'Table view of plan')
     )
 
-    plan_name = models.CharField(max_length=140)
-    plan_slug = models.SlugField(
+    name = models.CharField(max_length=140)
+    slug = models.SlugField(
         max_length=140,
         db_index=True,
         null=True,
         blank=True
     )
-    plan_description = models.CharField(
+    description = models.CharField(
         max_length=200,
         blank=True,
         null=True
     )
-    plan_version = models.PositiveSmallIntegerField()
-    plan_type = models.PositiveIntegerField(
+    version = models.PositiveSmallIntegerField()
+    type = models.PositiveIntegerField(
         choices=TYPES
     )
-    plan_date_creation = models.DateTimeField(auto_now_add=True)
-    plan_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_creation = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # Managers
-    table_plan_objects = TablePlanManager()
+    objects = Manager()
     graph_plan_objects = GraphPlanManager()
+    table_plan_objects = TablePlanManager()
 
     def __str__(self):
-        return f'{self.plan_author.__str__()} - {self.plan_name} ({self.plan_version})'
+        return f'{self.author.__str__()} - {self.name} ({self.version})'
 
     def save(self, *args, **kwargs):
-        self.plan_slug = hashlib.md5(
-            (self.plan_name + self.plan_author.get_full_name() + str(self.plan_version)).encode()).hexdigest()
+        self.slug = hashlib.md5(
+            (self.name + self.author.get_full_name() + str(self.version)).encode()).hexdigest()
         super(Plan, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        if self.type == self.GRAPH_TYPE:
+            return reverse('graph:to_plan', args=(self.slug,))
+        else:
+            return reverse('table:to_plan', args=(self.slug,))
+
     class Meta:
-        unique_together = ('plan_author', 'plan_slug', 'plan_version')
+        unique_together = ('author', 'slug', 'version')
         verbose_name = 'Plan'
         verbose_name_plural = 'Plans'
 
@@ -99,13 +108,13 @@ class PlanObject(models.Model):
     """
     Abstract plan object model
     """
-    plan_object_name = models.CharField(max_length=50)
-    plan_object_color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE)
     related_plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
-    plan_object_priority = models.PositiveIntegerField()
+    priority = models.PositiveIntegerField(default=0)
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        return f'{self.related_plan.plan_type} - {self.plan_object_name}'
+        return f'{self.related_plan.type} - {self.name}'

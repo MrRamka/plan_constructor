@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    {{ plan.name }}
+{% endblock %}
+
+{% block container %}
+    <div class="main" id="main">
+        <div class="mainBlock1">
+            <div style="position: absolute; top: 70%; transform: translateY(-70%);">
+                <h1>Name: {{ plan.name }}</h1>
+                <p>Description: {{ plan.description }}</p>
+                <p>Version: {{ plan.version }}</p>
+            </div>
+        </div>
+        <div class="mainBlock2" style="zoom:100%;">
+
+            <div id="zoomIn"
+                 style="margin-top:1em; position:absolute; margin-left:1em; font-size:1.2em; color:#9d9d9d; z-index:103;">
+                <i class="fas fa-search-plus"></i></div>
+            <div id="zoomOut"
+                 style="margin-top:3em; position:absolute; margin-left:1em; font-size:1.2em; color:#9d9d9d; z-index:103">
+                <i class="fas fa-search-minus"></i></div>
+            <div>
+
+
+                <script>
+                    let zoomInButton = document.getElementById("zoomIn");
+                    zoomInButton.addEventListener("click", function () {
+                        let element = document.getElementById('mainBlock2'),
+                            style = window.getComputedStyle(element),
+                            zoom = style.getPropertyValue('zoom');
+                        zoom = zoom * 1.08;
+                        document.getElementById("mainBlock2").style.zoom = zoom;
+                    });
+
+                    let zoomOutButton = document.getElementById("zoomOut");
+                    zoomOutButton.addEventListener("click", function () {
+                        let element = document.getElementById('mainBlock2'),
+                            style = window.getComputedStyle(element),
+                            zoom = style.getPropertyValue('zoom');
+                        zoom = zoom * 0.92;
+                        document.getElementById("mainBlock2").style.zoom = zoom;
+                    });
+                </script>
+
+            </div>
+        </div>
+        <div class="mainBlock3">
+            <div style="position: absolute;
+    top: 50%;
+    transform: translateY(-50%); right:6em;">
+                <button type="button" style="padding-left:1.5em; padding-right:1.5em;" class="btn btn-primary">Save
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+
+    {% include 'table/includes/right_navigation_menu.html' %}
+
+{% endblock %}

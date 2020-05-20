@@ -1,44 +1,12 @@
 <div class="main" id="main" style="width:80%;">
     <div class="mainBlock1" style="height:100%">
-        <h1>{{ plan_type}} <i class="fas fa-plus-circle"></i></h1>
-        {#        <h3 style="padding-top:0.7em;">Graph plans <i class="fas fa-plus-circle"></i></h3>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 0</div>#}
-        {#            <div class="card-block color-red"></div>#}
-        {#        </div>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 1</div>#}
-        {#            <div class="card-block color-blue"></div>#}
-        {#        </div>#}
+        <h1>{{ plan_type }} <i class="fas fa-plus-circle"></i></h1>
 
-        {#        <h3 style="padding-top:0.7em;">Table plans <i class="fas fa-plus-circle"></i></h3>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 0</div>#}
-        {#            <div class="card-block color-yellow"></div>#}
-        {#        </div>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 1</div>#}
-        {#            <div class="card-block"></div>#}
-        {#        </div>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 2</div>#}
-        {#            <div class="card-block color-geren"></div>#}
-        {#        </div>#}
-
-        {#        <h3 style="padding-top:0.7em;">Examples</h3>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 0</div>#}
-        {#            <div class="card-block color-green"></div>#}
-        {#        </div>#}
-        {#        <div class="card-block-container">#}
-        {#            <div class="card-block-header">Name 1</div>#}
-        {#            <div class="card-block"></div>#}
-        {#        </div>#}
         {# TODO add colors #}
         {% for plan in object_list %}
             <div class="card-block-container">
-                <div class="card-block-header"><h3>{{ plan.plan_name }} (v. {{ plan.plan_version }})</h3></div>
-                <a href="">
+                <div class="card-block-header"><h5>{{ plan.name }} (v. {{ plan.version }})</h5></div>
+                <a href="{{ plan.get_absolute_url }}">
                     <div class="card-block"></div>
                 </a>
             </div>
