@@ -19,32 +19,16 @@
             <div class="rightMenuItem">
 
                 <span class="blue"><i class="fas fa-palette" style="margin-right:1em;"></i> Color</span>
-
-                <div class="dropdown" style="padding-top:0.6em;">
-                    <a class="btn btn-secondary dropdown-toggle" style="background:none; color:gray;" href="#"
-                       role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">
-                        Choose color
-                    </a>
-
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-item">
-                            <div class="color color-red"></div>
-                            <div style="display:inline-block;">Red</div>
-                        </div>
-                        <div class="dropdown-item">
-                            <div class="color color-blue"></div>
-                            Blue
-                        </div>
-                        <div class="dropdown-item">
-                            <div class="color color-yellow"></div>
-                            Yellow
-                        </div>
-                        <div class="dropdown-item">
-                            <div class="color color-green"></div>
-                            Green
-                        </div>
-                    </div>
+                <div class="form-group" style="padding-top:0.6em;">
+                    <select class="form-control" id="colorsSelect" style="">
+                        <optgroup label="Main colors">
+                            {% for color in colors %}
+                                <option id="color_{{ color.id }}" data-color="#{{ color.hex }}">
+                                    {{ color.name }} </option>
+                            {% endfor %}
+                        </optgroup>
+                        {# ToDo: custom colors #}
+                    </select>
                 </div>
 
             </div>
@@ -54,7 +38,7 @@
 
                 <span class="blue"><i class="fas fa-list-ol" style="margin-right:1em;"></i> Priority</span>
                 <div class="form-group" style="padding-top:0.6em;">
-                    <input type="number" class="form-control" id="name"
+                    <input type="number" class="form-control" id="priority"
                            style="border:none; border-bottom:1px solid gray; height:2em;"
                            placeholder="Enter priority">
                 </div>
