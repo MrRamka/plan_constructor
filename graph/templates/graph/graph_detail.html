@@ -19,6 +19,8 @@
                     <button class="btn btn-warning" id="draw-on">Draw mode on</button>
                     <button class="btn btn-warning" id="draw-off">Draw mode off</button>
                     <button class="btn btn-danger" id="delete" disabled>Delete edge</button>
+                    <button class="btn btn-danger" id="delete-node" disabled>Delete node</button>
+
 
                 </p>
             </div>
@@ -155,6 +157,10 @@
 
             });
 
+            let eh = cy.edgehandles({
+                snap: true
+            });
+
             // Ajax setup
             function getCookie(name) {
                 let cookieValue = null;
@@ -163,7 +169,7 @@
                     let cookies = document.cookie.split(';');
                     for (i; i < cookies.length; i++) {
                         let cookie = jQuery.trim(cookies[i]);
-// Does this cookie string begin with the name we want?
+                        // Does this cookie string begin with the name we want?
                         if (cookie.substring(0, name.length + 1) === (name + '=')) {
                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                             break;
@@ -192,20 +198,111 @@
 
             cy.on('tap', 'node', function (evt) {
                 let node = evt.target;
+                {# Update label when tapped#}
                 let label = node.data('label');
-                {# ToDo change node lable #}
-                $("#name").val(label);
+                let nameInput = $("#name");
+                nameInput.val(label);
 
+                {# ajax for change node name #}
+                nameInput.blur(function () {
+                    let newLabel = nameInput.val();
+                    if (label !== newLabel) {
+                        // set new label
+                        node.data('label', newLabel);
+                        $.ajax({
+                            url: '{% url 'graph:update_label' %}',
+                            method: 'post',
+                            data: {
+                                'node_id': node.data('id'),
+                                'new_node_name': newLabel
+                            },
+                            success: function (d) {
+                                alert(d['status']);
+                                {# TODO: popup or status place #}
+                            }
+
+                        })
+                    }
+                });
+
+                {# color select #}
                 let colorHex = node.data('color');
-
                 $('#colorsSelect option[data-color=' + colorHex + ']').prop('selected', true);
+                let colorSelect = $('#colorsSelect');
+                {# Change color via ajax #}
+                colorSelect.change(function () {
+                    let newColorHex = $('#colorsSelect option:selected').attr("data-color");
+                    node.data('color', '#' + newColorHex);
+                    $.ajax({
+                        url: '{% url 'graph:update_color' %}',
+                        method: 'post',
+                        data: {
+                            'node_id': node.data('id'),
+                            'new_node_color': newColorHex
+                        },
+                        success: function (d) {
+                            alert(d['status']);
+                            {# TODO: popup or status place #}
+                        }
 
+                    })
+
+                });
+
+                {# Update priority when tapped#}
                 let priority = node.data('priority');
-                $('#priority').val(priority);
+                let priorityInput = $('#priority');
+                priorityInput.val(priority);
+
+                {# ajax for change priority #}
+                priorityInput.blur(function () {
+                    let newPriority = priorityInput.val();
+                    if (priority !== newPriority) {
+                        // set new label
+                        node.data('priority', newPriority);
+                        $.ajax({
+                            url: '{% url 'graph:update_priority' %}',
+                            method: 'post',
+                            data: {
+                                'node_id': node.data('id'),
+                                'new_node_priority': newPriority
+                            },
+                            success: function (d) {
+                                alert(d['status']);
+                                {# TODO: popup or status place #}
+                            }
+
+                        })
+                    }
+
+                });
+
+
+                {# delete node #}
+                let deleteNodeButton = $('#delete-node');
+                deleteNodeButton.removeAttr('disabled');
+                deleteNodeButton.click(function () {
+                    cy.remove(node); // removes all connected edges
+                    deleteNodeButton.attr('disabled', '');
+                    $.ajax({
+                        url: '{% url 'graph:delete_node' %}',
+                        method: 'post',
+                        data: {
+                            'node_id': node.data('id')
+                        },
+                        success: function (d) {
+                            alert(d['status']);
+                            {# TODO: popup or status place #}
+                        }
+
+                    })
+                });
+
 
             });
 
 
+            {# delete edge #}
             cy.on('tap', 'edge', function (event) {
                 let edge = event.target;
                 let deleteButton = $('#delete');
@@ -213,16 +310,43 @@
                 deleteButton.click(function () {
                     cy.remove(edge);
                     deleteButton.attr('disabled', '');
-                    {# TODO: ajax delete edge method #}
+                    $.ajax({
+                        url: '{% url 'graph:delete_edge' %}',
+                        method: 'post',
+                        data: {
+                            'edge_id': edge.data('id')
+                        },
+                        success: function (d) {
+                            alert(d['status']);
+                            {# TODO: popup or status place #}
+                        }
+
+                    })
+
                 });
 
             });
 
+            {# creating edges#}
+            cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
+                $.ajax({
+                    url: '{% url 'graph:add_edge' %}',
+                    method: 'POST',
 
-            let eh = cy.edgehandles({
-                snap: true
+                    data: {
+                        'node_start': sourceNode.data('id'),
+                        'node_end': targetNode.data('id')
+                    },
+                    success: function (d) {
+                        alert(d['status']);
+                        {#                         TODO: popup or status place #}
+
+                    },
+
+                });
             });
 
+            {# add node #}
             $('#add-node').click(function (e) {
                 e.preventDefault();
                 $.ajax({
