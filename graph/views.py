@@ -54,6 +54,7 @@ class GraphDetailView(DetailView, LoginRequiredMixin):
         return context_data
 
 
+# todo  create mixin: allow edit only own components
 class AddNode(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
@@ -72,4 +73,84 @@ class AddNode(LoginRequiredMixin, View):
                 'v_priority': vertex.priority
             }
 
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class ChangeNodeLabel(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.is_ajax():
+            node_id = request.POST.get('node_id', None)
+            node_label = request.POST.get('new_node_name', None)
+            node = Vertex.objects.get(id=node_id)
+            node.name = node_label
+            node.save()
+            data = {
+                'status': 'OK'
+            }
+
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class ChangeNodePriority(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.is_ajax():
+            node_id = request.POST.get('node_id', None)
+            new_node_priority = request.POST.get('new_node_priority', None)
+            node = Vertex.objects.get(id=node_id)
+            node.priority = new_node_priority
+            node.save()
+            data = {
+                'status': 'OK'
+            }
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class AddEdge(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.is_ajax():
+            node_start = request.POST.get('node_start', None)
+            node_end = request.POST.get('node_end', None)
+            edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end)
+            data = {
+                'status': 'CREATED'
+            }
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class DeleteEdge(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.is_ajax():
+            edge_id = request.POST.get('edge_id', None)
+            edge = Edge.objects.get(id=edge_id)
+            edge.delete()
+            data = {
+                'status': 'DELETED'
+            }
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class UpdateColor(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.is_ajax():
+            node_id = request.POST.get('node_id', None)
+            new_node_color = request.POST.get('new_node_color', None)
+            node = Vertex.objects.get(id=node_id)
+            color = Color.objects.get(hex=new_node_color)
+            node.color = color
+            node.save()
+            data = {
+                'status': 'OK'
+            }
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+class DeleteNode(LoginRequiredMixin, View):
+    def post(self, request):
+        if request.is_ajax():
+            node_id = request.POST.get('node_id', None)
+            node = Vertex.objects.get(id=node_id)
+            node.delete()
+            data = {
+                'status': 'DELETED'
+            }
             return HttpResponse(json.dumps(data), content_type='application/json')

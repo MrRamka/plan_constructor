@@ -23,7 +23,7 @@
                     <select class="form-control" id="colorsSelect" style="">
                         <optgroup label="Main colors">
                             {% for color in colors %}
-                                <option id="color_{{ color.id }}" data-color="#{{ color.hex }}">
+                                <option id="color_{{ color.id }}" data-color="{{ color.hex }}">
                                     {{ color.name }} </option>
                             {% endfor %}
                         </optgroup>
