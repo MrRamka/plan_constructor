@@ -104,7 +104,7 @@ class Plan(models.Model):
         verbose_name_plural = 'Plans'
 
 
-class PlanObject(models.Model):
+class  PlanObject(models.Model):
     """
     Abstract plan object model
     """

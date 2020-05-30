@@ -71,7 +71,7 @@
                     {% for edge in edges %}
                         {
                             data: {
-                                id: '{{edge.start_vertex.id}}_{{ edge.end_vertex.id }}',
+                                id: '{{edge.id }}_',
                                 source: '{{edge.start_vertex.id}}',
                                 target: '{{ edge.end_vertex.id }}'
                             }
@@ -217,7 +217,7 @@
                                 'new_node_name': newLabel
                             },
                             success: function (d) {
-                                alert(d['status']);
+                                console.log(d['status']);
                                 {# TODO: popup or status place #}
                             }
 
@@ -241,7 +241,7 @@
                             'new_node_color': newColorHex
                         },
                         success: function (d) {
-                            alert(d['status']);
+                            console.log(d['status']);
                             {# TODO: popup or status place #}
                         }
 
@@ -268,7 +268,7 @@
                                 'new_node_priority': newPriority
                             },
                             success: function (d) {
-                                alert(d['status']);
+                                console.log(d['status']);
                                 {# TODO: popup or status place #}
                             }
 
@@ -282,8 +282,8 @@
                 let deleteNodeButton = $('#delete-node');
                 deleteNodeButton.removeAttr('disabled');
                 deleteNodeButton.click(function () {
-                    cy.remove(node); // removes all connected edges
                     deleteNodeButton.attr('disabled', '');
+                    let nodeId = node.data('id');
                     $.ajax({
                         url: '{% url 'graph:delete_node' %}',
                         method: 'post',
@@ -291,7 +291,8 @@
                             'node_id': node.data('id')
                         },
                         success: function (d) {
-                            alert(d['status']);
+                            cy.remove(node); // removes all connected edges
+                            console.log(d['status']);
                             {# TODO: popup or status place #}
                         }
 
@@ -310,6 +311,7 @@
                 deleteButton.click(function () {
                     cy.remove(edge);
                     deleteButton.attr('disabled', '');
+                    console.log(edge.data('id'));
                     $.ajax({
                         url: '{% url 'graph:delete_edge' %}',
                         method: 'post',
@@ -317,7 +319,7 @@
                             'edge_id': edge.data('id')
                         },
                         success: function (d) {
-                            alert(d['status']);
+                            console.log(d['status']);
                             {# TODO: popup or status place #}
                         }
 
@@ -338,8 +340,13 @@
                         'node_end': targetNode.data('id')
                     },
                     success: function (d) {
-                        alert(d['status']);
-                        {#                         TODO: popup or status place #}
+                        console.log(d['edge_id']);
+                        let newId = d['edge_id'] + "_";
+                        let oldId = addedEles.data('id', newId);
+                        {# TODO BUG WITH  #}
+                        console.log(oldId);
+                        console.log(d['status']);
+                        {# TODO: popup or status place #}
 
                     },
 
@@ -356,6 +363,7 @@
                     data: {
                         'plan_id': $('#plan-name').attr('data-id')
                     },
+
                     success: function (d) {
                         let name = d['v_name'];
                         let id = d['v_id'];

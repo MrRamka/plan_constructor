@@ -1,12 +1,22 @@
 from django.conf.urls import url
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 
+from graph import apiview
 from graph.views import GraphListView, GraphDetailView, AddNode, ChangeNodeLabel, ChangeNodePriority, DeleteEdge, \
     UpdateColor, DeleteNode, AddEdge
 
 app_name = 'graph'
+# Rest Api
+router = routers.DefaultRouter()
+router.register(r'vertices', apiview.VertexViewSet, basename='vertices_api')
+router.register(r'edges', apiview.EdgeViewSet, basename='edges_api')
+
 urlpatterns = [
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # Start ajax
+    # path('node/', NodeView.as_view(), name='node'),
     path('add-node/', AddNode.as_view(), name='add_node'),
     path('add-edge/', AddEdge.as_view(), name='add_edge'),
 
