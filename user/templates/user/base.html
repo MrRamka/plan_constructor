@@ -2,13 +2,14 @@
 {% load static %}
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" type="text/css" href="{% static 'core/bootstrap.css' %}">
+
     <title>{% block title %}Title{% endblock %}</title>
 </head>
 
 <body>
-    <div id="content">
-        {% block content %}{% endblock %}
-    </div>
+<div id="content">
+    {% block content %}{% endblock %}
+</div>
 </body>
 </html>

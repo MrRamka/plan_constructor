@@ -5,10 +5,17 @@ from user.models import User
 
 
 class RegistrationForm(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields:
+            self.fields[key].required = True
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'username', 'password']
+        fields = ['first_name', 'last_name', 'email', 'username']
 
     def __str__(self):
         return self.name
@@ -19,4 +26,3 @@ class RegistrationForm(ModelForm):
         if commit:
             user.save()
         return user
-
