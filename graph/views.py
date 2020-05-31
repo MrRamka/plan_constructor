@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from core.models import Plan, Color
 from graph.models import Vertex, Edge
@@ -112,7 +112,8 @@ class AddEdge(LoginRequiredMixin, View):
             node_end = request.POST.get('node_end', None)
             edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end)
             data = {
-                'status': 'CREATED'
+                'status': 'CREATED',
+                'edge_id': edge.id
             }
             return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -120,7 +121,7 @@ class AddEdge(LoginRequiredMixin, View):
 class DeleteEdge(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
-            edge_id = request.POST.get('edge_id', None)
+            edge_id = request.POST.get('edge_id', None)[:-1]
             edge = Edge.objects.get(id=edge_id)
             edge.delete()
             data = {
