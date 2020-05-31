@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.urls import reverse_lazy
+
 from plan_constructor import env_sett
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'crispy_forms',
     'user',
     'core',
     'table',
@@ -121,7 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = reverse_lazy('core:home')
 
-LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = reverse_lazy('user:login')
 AUTH_USER_MODEL = 'user.User'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

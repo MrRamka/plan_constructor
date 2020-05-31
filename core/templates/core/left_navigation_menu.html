@@ -4,7 +4,7 @@
     </div>
     <div class="LeftMenuBlock2">
         <div class="leftMenuItem {% if plan_type_all %}selected{% endif %}"><i class="fab fa-accusoft"></i>
-            <a href="">
+            <a href="{% url 'core:home' %}">
                 All Plans
             </a>
         </div>
@@ -19,9 +19,7 @@
 
         <a class="navigation" href="{% url 'table:to_user_table_list' %}">
             <div class="leftMenuItem {% if plan_type_table %} selected {% endif %}"><i class="fas fa-align-justify"></i>
-                {#                <a class="navigation" href="{% url 'table:to_user_table_list' %}">#}
                 Tables
-                {#                </a>#}
             </div>
         </a>
     </div>
@@ -36,7 +34,7 @@
         </div>
 
         <div class="leftMenuItem"><i class="fas fa-sign-out-alt"></i>
-            <a href="">
+            <a href="{% url 'user:logout' %}">
                 Log out
             </a>
         </div>
