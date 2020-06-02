@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends 'graph/main_graph.html' %}
 {% load static %}
 {% block title %}
     {{ plan.name }}
@@ -6,38 +6,38 @@
 
 {% block container %}
     <div class="main" id="main">
-        <div class="mainBlock1">
-            <div style="position: absolute; top: 70%; transform: translateY(-70%);">
-                <h1 id="plan-name" data-id="{{ plan.id }}">Name: {{ plan.name }}</h1>
-                <p>Description: {{ plan.description }}</p>
-                <p>Version: {{ plan.version }}</p>
-                <p>
-                    <button type="button" class="btn btn-primary" id="add-node"><i class="fas fa-plus"></i> &nbsp; Add
-                        node
-                    </button>
+        <div class="graph-navigation">
+            {#            position: absolute; top: 70%; transform: translateY(-70%);#}
+            <div style="">
+                <h1 class="" id="plan-name" data-id="{{ plan.id }}">{{ plan.name }}</h1>
+                {% if plan.description %}
+                    <p>Description: {{ plan.description }}</p>
+                {% endif %}
+                <p class="ml-2">Version: {{ plan.version }}</p>
+                <hr/>
+                <div class="m-2">
+                    <button class="btn btn-primary rounded" id="add-node"><i class="fas fa-plus"></i> Add node</button>
                     <button class="btn btn-success" id="start">Start on selected</button>
                     <button class="btn btn-warning" id="draw-on">Draw mode on</button>
                     <button class="btn btn-warning" id="draw-off">Draw mode off</button>
                     <button class="btn btn-danger" id="delete" disabled>Delete edge</button>
                     <button class="btn btn-danger" id="delete-node" disabled>Delete node</button>
-
-
-                </p>
+                </div>
+                <hr/>
+                <div class="mainBlock2 m-2" id="cy">
+                </div>
             </div>
         </div>
 
-        <div class="mainBlock2" id="cy">
-        </div>
 
-
-        <div class="mainBlock3">
-            <div style="position: absolute;
-    top: 50%;
-    transform: translateY(-50%); right:6em;">
-                <button type="button" style="padding-left:1.5em; padding-right:1.5em;" class="btn btn-primary">Save
-                </button>
-            </div>
-        </div>
+        {#        <div class="mainBlock3">#}
+        {#            <div style="position: absolute;#}
+        {#    top: 50%;#}
+        {#    transform: translateY(-50%); right:6em;">#}
+        {#                <button type="button" style="padding-left:1.5em; padding-right:1.5em;" class="btn btn-primary">Save#}
+        {#                </button>#}
+        {#            </div>#}
+        {#        </div>#}
 
 
     </div>
@@ -152,7 +152,7 @@
 
                 layout: {
                     name: 'grid',
-                    rows: 3
+                    rows: 4
                 }
 
             });

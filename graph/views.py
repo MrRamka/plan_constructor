@@ -27,7 +27,7 @@ class GraphListView(ListView, LoginRequiredMixin):
         return context_data
 
 
-class GraphDetailView(DetailView, LoginRequiredMixin):
+class GraphDetailView(LoginRequiredMixin, DetailView):
     model = Plan
     template_name = 'graph/graph_detail.html'
 
@@ -43,10 +43,11 @@ class GraphDetailView(DetailView, LoginRequiredMixin):
         context_data['vertices'] = vertices
 
         # Add edges
-        edges = Edge.objects.filter(
-            reduce(or_, [(Q(start_vertex=vertex) | Q(end_vertex=vertex)) for vertex in vertices])
-        ).distinct()
-        context_data['edges'] = edges
+        if vertices:
+            edges = Edge.objects.filter(
+                reduce(or_, [(Q(start_vertex=vertex) | Q(end_vertex=vertex)) for vertex in vertices])
+            ).distinct()
+            context_data['edges'] = edges
 
         # Add colors
         colors = Color.objects.all()
@@ -155,3 +156,5 @@ class DeleteNode(LoginRequiredMixin, View):
                 'status': 'DELETED'
             }
             return HttpResponse(json.dumps(data), content_type='application/json')
+
+
