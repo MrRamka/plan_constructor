@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block container %}
+    <div class="main main-create shadow">
+        <div class="mainBlock1">
+            <h2><b>Create plan</b></h2>
+            <hr/>
+            <form method="post">
+
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <button class="btn btn-outline-primary" type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

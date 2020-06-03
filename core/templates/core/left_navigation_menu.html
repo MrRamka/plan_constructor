@@ -9,6 +9,13 @@
             </div>
         </a>
 
+        <a class="navigation" href="{% url 'core:create_plan' %}">
+            <div class="leftMenuItem {% if create_plan %} selected{% endif %}"><i class="fas fa-plus"></i>
+                Create
+            </div>
+        </a>
+
+
         <a class="navigation" href="{% url 'graph:to_user_graph_list' %}">
             <div class="leftMenuItem {% if plan_type_graph %} selected{% endif %}"><i class="fas fa-chart-line"></i>
                 Graphs

@@ -3,6 +3,7 @@ from functools import reduce
 from operator import or_
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views import View
@@ -111,7 +112,10 @@ class AddEdge(LoginRequiredMixin, View):
         if request.is_ajax():
             node_start = request.POST.get('node_start', None)
             node_end = request.POST.get('node_end', None)
-            edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end)
+            node_hash = request.POST.get('node_hash', None)
+
+            edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end, library_id=node_hash)
+            print('add: ' + node_hash)
             data = {
                 'status': 'CREATED',
                 'edge_id': edge.id
@@ -122,9 +126,12 @@ class AddEdge(LoginRequiredMixin, View):
 class DeleteEdge(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
-            edge_id = request.POST.get('edge_id', None)[:-1]
-            edge = Edge.objects.get(id=edge_id)
+            edge_id = request.POST.get('edge_id', None)
+            print('remove: ' + edge_id)
+
+            edge = Edge.objects.get(library_id=edge_id)
             edge.delete()
+
             data = {
                 'status': 'DELETED'
             }
@@ -156,5 +163,3 @@ class DeleteNode(LoginRequiredMixin, View):
                 'status': 'DELETED'
             }
             return HttpResponse(json.dumps(data), content_type='application/json')
-
-

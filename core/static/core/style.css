@@ -172,7 +172,10 @@ body {
     align-items: flex-end;
     position: relative;
 }
-
+.main-create {
+    width: 50%;
+    height: 60%;
+}
 .mainBlock1 p {
     line-height: 1em;
 }
@@ -233,4 +236,9 @@ body {
     text-align: center;
     line-height: 8em;
     font-size: 1em;
+}
+.main-navigation {
+    width: 90%;
+    margin: auto;
+    padding: 1em;
 }
