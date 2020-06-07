@@ -1,5 +1,5 @@
 import os
-
+import dj_database_url
 from django.urls import reverse_lazy
 from decouple import config
 
@@ -126,3 +126,5 @@ LOGIN_REDIRECT_URL = reverse_lazy('core:home')
 LOGOUT_REDIRECT_URL = reverse_lazy('user:login')
 AUTH_USER_MODEL = 'user.User'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
