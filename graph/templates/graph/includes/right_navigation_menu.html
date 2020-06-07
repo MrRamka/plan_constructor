@@ -1,5 +1,5 @@
 <div class="rightMenu">
-    <div class="rightMenuBlock1">Name settings</div>
+    <div class="rightMenuBlock1">Vertex settings</div>
     <form>
         <div class="rightMenuBlock2">
 
@@ -27,6 +27,14 @@
                                     {{ color.name }} </option>
                             {% endfor %}
                         </optgroup>
+                        {% if custom_colors %}
+                            <optgroup label="Custom colors">
+                            {% for color in custom_colors %}
+                                <option id="color_{{ color.id }}" data-color="{{ color.hex }}">
+                                    {{ color.name }} </option>
+                            {% endfor %}
+                            </optgroup>
+                        {% endif %}
                         {# ToDo: custom colors #}
                     </select>
                 </div>

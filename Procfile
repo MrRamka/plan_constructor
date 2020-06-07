@@ -1,0 +1,1 @@
+web: gunicorn instagram_clone_django.wsgi --log-file -

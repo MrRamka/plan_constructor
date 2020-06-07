@@ -1,52 +1,61 @@
-{% extends 'core/base.html' %}
+{% extends 'graph/main_graph.html' %}
 {% load static %}
 {% block title %}
     {{ plan.name }}
 {% endblock %}
 
 {% block container %}
-    <div class="main" id="main">
-        <div class="mainBlock1">
-            <div style="position: absolute; top: 70%; transform: translateY(-70%);">
-                <h1 id="plan-name" data-id="{{ plan.id }}">Name: {{ plan.name }}</h1>
-                <p>Description: {{ plan.description }}</p>
-                <p>Version: {{ plan.version }}</p>
-                <p>
-                    <button type="button" class="btn btn-primary" id="add-node"><i class="fas fa-plus"></i> &nbsp; Add
-                        node
-                    </button>
+    <div class="main shadow" id="main">
+        <div class="main-navigation">
+            {#            position: absolute; top: 70%; transform: translateY(-70%);#}
+            <div style="">
+                <h1 class="" id="plan-name" data-id="{{ plan.id }}">{{ plan.name }}</h1>
+                {% if plan.description %}
+                    <p>Description: {{ plan.description }}</p>
+                {% endif %}
+                <p class="ml-2">Version: {{ plan.version }}</p>
+                <div class="saving">
+                    <img class="saving-img" src="{% static 'core/saving.gif' %}" alt="">
+                    Saving...
+                </div>
+                <div class="saved">
+                    All changes saved on server
+                </div>
+                <hr/>
+                <div class="m-2">
+                    <button class="btn btn-primary rounded" id="add-node"><i class="fas fa-plus"></i> Add node</button>
                     <button class="btn btn-success" id="start">Start on selected</button>
                     <button class="btn btn-warning" id="draw-on">Draw mode on</button>
                     <button class="btn btn-warning" id="draw-off">Draw mode off</button>
                     <button class="btn btn-danger" id="delete" disabled>Delete edge</button>
                     <button class="btn btn-danger" id="delete-node" disabled>Delete node</button>
-
-
-                </p>
+                </div>
+                <hr/>
+                <div class="mainBlock2 m-2" id="cy">
+                </div>
             </div>
         </div>
-
-        <div class="mainBlock2" id="cy">
-        </div>
-
-
-        <div class="mainBlock3">
-            <div style="position: absolute;
-    top: 50%;
-    transform: translateY(-50%); right:6em;">
-                <button type="button" style="padding-left:1.5em; padding-right:1.5em;" class="btn btn-primary">Save
-                </button>
-            </div>
-        </div>
-
-
     </div>
 
     {% include 'graph/includes/right_navigation_menu.html' %}
 
-
     <script type="text/javascript">
         $(document).ready(function () {
+
+            let saved = $('.saved');
+            let saving = $('.saving').hide();
+            let lastNode = null;
+            let lastEdge = null;
+            let priorityInput = $('#priority');
+            let nameInput = $("#name");
+            let colorSelect = $('#colorsSelect');
+            let deleteNodeButton = $('#delete-node');
+            let deleteEdgeButton = $('#delete');
+            let addNodeButton = $('#add-node');
+            let planId = $('#plan-name').attr('data-id');
+
+            // ajax setup
+            {% include 'graph/includes/ajax.html' %}
 
             let cy = cytoscape({
 
@@ -71,7 +80,7 @@
                     {% for edge in edges %}
                         {
                             data: {
-                                id: '{{edge.id }}_',
+                                id: '{{edge.library_id }}',
                                 source: '{{edge.start_vertex.id}}',
                                 target: '{{ edge.end_vertex.id }}'
                             }
@@ -152,7 +161,7 @@
 
                 layout: {
                     name: 'grid',
-                    rows: 3
+                    rows: 4
                 }
 
             });
@@ -161,83 +170,54 @@
                 snap: true
             });
 
-            // Ajax setup
-            function getCookie(name) {
-                let cookieValue = null;
-                let i = 0;
-                if (document.cookie && document.cookie !== '') {
-                    let cookies = document.cookie.split(';');
-                    for (i; i < cookies.length; i++) {
-                        let cookie = jQuery.trim(cookies[i]);
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
 
-            let csrftoken = getCookie('csrftoken');
-
-            function csrfSafeMethod(method) {
-                // these HTTP methods do not require CSRF protection
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-
-            $.ajaxSetup({
-                crossDomain: false, // obviates need for sameOrigin test
-                beforeSend: function (xhr, settings) {
-                    if (!csrfSafeMethod(settings.type)) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            });
-            //end setup
-
-            cy.on('tap', 'node', function (evt) {
-                let node = evt.target;
-                {# Update label when tapped#}
-                let label = node.data('label');
-                let nameInput = $("#name");
-                nameInput.val(label);
-
-                {# ajax for change node name #}
-                nameInput.blur(function () {
+            // handler to change name
+            nameInput.blur(function () {
+                if (lastNode != null) {
+                    let label = lastNode.data('label');
                     let newLabel = nameInput.val();
+                    console.log(lastNode.id());
                     if (label !== newLabel) {
                         // set new label
-                        node.data('label', newLabel);
+                        lastNode.data('label', newLabel);
+                        saved.hide();
+                        saving.show();
+
                         $.ajax({
                             url: '{% url 'graph:update_label' %}',
                             method: 'post',
                             data: {
-                                'node_id': node.data('id'),
+                                'node_id': lastNode.data('id'),
                                 'new_node_name': newLabel
                             },
                             success: function (d) {
                                 console.log(d['status']);
                                 {# TODO: popup or status place #}
                             }
+                        });
 
-                        })
+                        saving.hide();
+                        saved.show();
                     }
-                });
+                } else {
+                    {# todo: message to select node   #}
+                }
+            });
 
-                {# color select #}
-                let colorHex = node.data('color');
-                $('#colorsSelect option[data-color=' + colorHex + ']').prop('selected', true);
-                let colorSelect = $('#colorsSelect');
-                {# Change color via ajax #}
-                colorSelect.change(function () {
-                    let newColorHex = $('#colorsSelect option:selected').attr("data-color");
-                    node.data('color', '#' + newColorHex);
+            // handler to change color
+            colorSelect.change(function () {
+                let newColorHex = $('#colorsSelect option:selected').attr("data-color");
+                if (lastNode != null) {
+                    lastNode.data('color', '#' + newColorHex);
+
+                    saved.hide();
+                    saving.show();
+
                     $.ajax({
                         url: '{% url 'graph:update_color' %}',
                         method: 'post',
                         data: {
-                            'node_id': node.data('id'),
+                            'node_id': lastNode.id(),
                             'new_node_color': newColorHex
                         },
                         success: function (d) {
@@ -245,26 +225,26 @@
                             {# TODO: popup or status place #}
                         }
 
-                    })
+                    });
 
-                });
+                    saved.show();
+                    saving.hide();
+                }
+            });
 
-                {# Update priority when tapped#}
-                let priority = node.data('priority');
-                let priorityInput = $('#priority');
-                priorityInput.val(priority);
-
-                {# ajax for change priority #}
-                priorityInput.blur(function () {
-                    let newPriority = priorityInput.val();
+            // handler to change priority
+            priorityInput.blur(function () {
+                let newPriority = priorityInput.val();
+                if (lastNode != null) {
+                    let priority = lastNode.data('priority');
                     if (priority !== newPriority) {
                         // set new label
-                        node.data('priority', newPriority);
+                        lastNode.data('priority', newPriority);
                         $.ajax({
                             url: '{% url 'graph:update_priority' %}',
                             method: 'post',
                             data: {
-                                'node_id': node.data('id'),
+                                'node_id': lastNode.id(),
                                 'new_node_priority': newPriority
                             },
                             success: function (d) {
@@ -274,49 +254,74 @@
 
                         })
                     }
+                }
+            });
 
-                });
+            // update last node and allow delete node
+            cy.on('tap', 'node', function (evt) {
+                lastNode = evt.target;
+                console.log(lastNode.data('id'));
 
+                // setup label on right menu
+                let label = lastNode.data('label');
+                nameInput.val(label);
 
-                {# delete node #}
-                let deleteNodeButton = $('#delete-node');
+                // setup priority on right menu
+                let priority = lastNode.data('priority');
+                priorityInput.val(priority);
+
+                // setup color on right menu
+                let colorHex = lastNode.data('color');
+                $('#colorsSelect option[data-color=' + colorHex + ']').prop('selected', true);
+
+                // allow delete last node
                 deleteNodeButton.removeAttr('disabled');
-                deleteNodeButton.click(function () {
-                    deleteNodeButton.attr('disabled', '');
-                    let nodeId = node.data('id');
+            });
+
+            // delete node button handler
+            deleteNodeButton.click(function () {
+                // put to disable mode
+                deleteNodeButton.attr('disabled', '');
+                // check if not null
+                if (lastNode != null) {
+                    let nodeId = lastNode.id();
+                    cy.remove(lastNode); // removes all connected edges
+
+                    saved.hide();
+                    saving.show();
                     $.ajax({
                         url: '{% url 'graph:delete_node' %}',
                         method: 'post',
                         data: {
-                            'node_id': node.data('id')
+                            'node_id': nodeId
                         },
                         success: function (d) {
-                            cy.remove(node); // removes all connected edges
                             console.log(d['status']);
                             {# TODO: popup or status place #}
                         }
-
-                    })
-                });
-
-
+                    });
+                    saved.show();
+                    saving.hide();
+                }
             });
 
-
-            {# delete edge #}
+            // tap to edge to update last edge and allow delete button
             cy.on('tap', 'edge', function (event) {
-                let edge = event.target;
-                let deleteButton = $('#delete');
-                deleteButton.removeAttr('disabled');
-                deleteButton.click(function () {
-                    cy.remove(edge);
-                    deleteButton.attr('disabled', '');
-                    console.log(edge.data('id'));
+                lastEdge = event.target;
+                deleteEdgeButton.removeAttr('disabled');
+            });
+
+            //delete edge
+            deleteEdgeButton.click(function () {
+                if (lastEdge != null) {
+                    cy.remove(lastEdge);
+                    deleteEdgeButton.attr('disabled', '');
+                    console.log(lastEdge.id());
                     $.ajax({
                         url: '{% url 'graph:delete_edge' %}',
                         method: 'post',
                         data: {
-                            'edge_id': edge.data('id')
+                            'edge_id': lastEdge.id()
                         },
                         success: function (d) {
                             console.log(d['status']);
@@ -324,27 +329,33 @@
                         }
 
                     })
-
-                });
-
+                }
             });
 
-            {# creating edges#}
+            //create edge
             cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
+                console.log(addedEles.id());
                 $.ajax({
                     url: '{% url 'graph:add_edge' %}',
                     method: 'POST',
 
                     data: {
-                        'node_start': sourceNode.data('id'),
-                        'node_end': targetNode.data('id')
+                        'node_hash': addedEles.id(),
+                        'node_start': sourceNode.id(),
+                        'node_end': targetNode.id()
                     },
+
                     success: function (d) {
                         console.log(d['edge_id']);
                         let newId = d['edge_id'] + "_";
-                        let oldId = addedEles.data('id', newId);
+                        console.log(newId);
+                        let oldId = addedEles.data('id');
+
+
                         {# TODO BUG WITH  #}
-                        console.log(oldId);
+                        {#console.log(oldId);#}
+                        {#console.log(' New ID is');#}
+                        {#console.log(node.data('id'));#}
                         console.log(d['status']);
                         {# TODO: popup or status place #}
 
@@ -353,15 +364,14 @@
                 });
             });
 
-            {# add node #}
-            $('#add-node').click(function (e) {
-                e.preventDefault();
+            // create node
+            addNodeButton.click(function (e) {
                 $.ajax({
                     url: '{% url 'graph:add_node' %}',
                     method: 'POST',
 
                     data: {
-                        'plan_id': $('#plan-name').attr('data-id')
+                        'plan_id': planId
                     },
 
                     success: function (d) {
@@ -379,7 +389,7 @@
                                 color: '#' + color,
                                 priority: priority,
                             },
-                            position: {x: 200, y: 200}
+                            position: {x: 400, y: 200}
 
                         });
                     },

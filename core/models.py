@@ -8,10 +8,29 @@ from django.utils.text import slugify
 from user.models import User
 
 
+class BaseColorManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(type=Color.BASE_COLOR)
+
+
+class UserColorManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(type=Color.CUSTOM_COLOR)
+
+
 class Color(models.Model):
     """
     Base color model
     """
+    BASE_COLOR = 0
+    CUSTOM_COLOR = 1
+    TYPES = (
+        (BASE_COLOR, 'Base color'),
+        (CUSTOM_COLOR, 'User color')
+    )
+    type = models.PositiveIntegerField(
+        choices=TYPES
+    )
     # String color in hex
     hex = models.CharField(max_length=6)
     name = models.CharField(max_length=20)
@@ -20,19 +39,24 @@ class Color(models.Model):
         null=True,
         blank=True
     )
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    # color manages
+    objects = Manager()
+    base_colors = BaseColorManager()
+    custom_color = UserColorManager()
+
+    def __str__(self):
+        return f'{self.author.__str__()} - {super().__str__()}'
 
     class Meta:
         ordering = ('name',)
-
-    def __str__(self):
-        return f'{self.name} (#{self.hex})'
 
 
 class UserColor(Color):
     """
     Model of custom user colors
     """
-    pass
+    # cant use inheritance because django create 1 to 1 field
     color_author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -104,7 +128,7 @@ class Plan(models.Model):
         verbose_name_plural = 'Plans'
 
 
-class  PlanObject(models.Model):
+class PlanObject(models.Model):
     """
     Abstract plan object model
     """

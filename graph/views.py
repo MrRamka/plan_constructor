@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
-from core.models import Plan, Color
+from core.models import Plan, Color, UserColor
 from graph.models import Vertex, Edge
 
 
@@ -27,7 +27,7 @@ class GraphListView(ListView, LoginRequiredMixin):
         return context_data
 
 
-class GraphDetailView(DetailView, LoginRequiredMixin):
+class GraphDetailView(LoginRequiredMixin, DetailView):
     model = Plan
     template_name = 'graph/graph_detail.html'
 
@@ -43,14 +43,18 @@ class GraphDetailView(DetailView, LoginRequiredMixin):
         context_data['vertices'] = vertices
 
         # Add edges
-        edges = Edge.objects.filter(
-            reduce(or_, [(Q(start_vertex=vertex) | Q(end_vertex=vertex)) for vertex in vertices])
-        ).distinct()
-        context_data['edges'] = edges
-
+        if vertices:
+            edges = Edge.objects.filter(
+                reduce(or_, [(Q(start_vertex=vertex) | Q(end_vertex=vertex)) for vertex in vertices])
+            ).distinct()
+            context_data['edges'] = edges
+        # custom color
+        custom_colors = Color.custom_color.filter(author=self.request.user)
+        context_data['custom_colors'] = custom_colors
         # Add colors
-        colors = Color.objects.all()
+        colors = Color.base_colors.all()
         context_data['colors'] = colors
+
         return context_data
 
 
@@ -110,7 +114,9 @@ class AddEdge(LoginRequiredMixin, View):
         if request.is_ajax():
             node_start = request.POST.get('node_start', None)
             node_end = request.POST.get('node_end', None)
-            edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end)
+            node_hash = request.POST.get('node_hash', None)
+
+            edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end, library_id=node_hash)
             data = {
                 'status': 'CREATED',
                 'edge_id': edge.id
@@ -121,9 +127,10 @@ class AddEdge(LoginRequiredMixin, View):
 class DeleteEdge(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
-            edge_id = request.POST.get('edge_id', None)[:-1]
-            edge = Edge.objects.get(id=edge_id)
+            edge_id = request.POST.get('edge_id', None)
+            edge = Edge.objects.get(library_id=edge_id)
             edge.delete()
+
             data = {
                 'status': 'DELETED'
             }
