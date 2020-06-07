@@ -3,13 +3,12 @@ from functools import reduce
 from operator import or_
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 
-from core.models import Plan, Color
+from core.models import Plan, Color, UserColor
 from graph.models import Vertex, Edge
 
 
@@ -49,10 +48,13 @@ class GraphDetailView(LoginRequiredMixin, DetailView):
                 reduce(or_, [(Q(start_vertex=vertex) | Q(end_vertex=vertex)) for vertex in vertices])
             ).distinct()
             context_data['edges'] = edges
-
+        # custom color
+        custom_colors = Color.custom_color.filter(author=self.request.user)
+        context_data['custom_colors'] = custom_colors
         # Add colors
-        colors = Color.objects.all()
+        colors = Color.base_colors.all()
         context_data['colors'] = colors
+
         return context_data
 
 

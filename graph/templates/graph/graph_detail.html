@@ -80,7 +80,7 @@
                     {% for edge in edges %}
                         {
                             data: {
-                                id: '{{edge.id }}_',
+                                id: '{{edge.library_id }}',
                                 source: '{{edge.start_vertex.id}}',
                                 target: '{{ edge.end_vertex.id }}'
                             }

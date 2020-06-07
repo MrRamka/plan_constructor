@@ -1,0 +1,211 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+    Settings
+{% endblock %}
+{% block head %}
+    <script src="https://cdn.jsdelivr.net/npm/a-color-picker@1.2.1/dist/acolorpicker.min.js"></script>
+{% endblock %}
+{% block container %}
+    <div class="main shadow" id="main">
+        <div class="mainBlock1">
+            <h1 class="display-4 font-weight-light p-2">Settings</h1>
+            <hr/>
+            <h2 class="text-secondary m-2">Colors</h2>
+            <button id="create-drop" class="btn btn-outline-secondary">Add color <i class="fa fa-angle-down"
+                                                                                    aria-hidden="true"></i>
+            </button>
+            <div id="create-color" class="p-2 m-2">
+                <div id="edit-panel" class="my-2">
+                    <span class="green"><i id="panel-save" class="edit fa fa-floppy-o fa-2x"
+                                           aria-hidden="true"></i></span>
+                    <span class="blue"><i id="panel-color" class="edit fa fa-palette fa-2x"
+                                          aria-hidden="true"></i></span>
+                    <span class="blue"><i id="panel-text" class="edit fa fa-font fa-2x" aria-hidden="true"></i></span>
+                    <span class="red"><i id="panel-close" class="edit last fa fa-times fa-2x"
+                                         aria-hidden="true"></i></span>
+
+                </div>
+                <div class="card my-2" style="width: 18rem">
+                    <div class="card-header" id="picker-header" data-color="rgb(255, 255, 255)">
+
+                    </div>
+                    <div class="body">
+                        <div class="form-group">
+                            <input id="color-name-input" type="text" class="form-control form-control-lg color-input"
+                                   placeholder="Tap to edit name (required)">
+                        </div>
+                        <div class="form-group">
+                            <input id="color-description-input" type="text" class="form-control color-input"
+                                   placeholder="Tap to edit description (not required)">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="border shadow" id="picker-wrapper">
+                <div class="m-1">
+                    <i class="fa fa-times" id="picker-wrapper-close" aria-hidden="true"></i>
+                </div>
+                <div id="picker" class=""
+                     acp-color="#fff"
+                     acp-show-rgb="no"
+                     acp-show-hsl="no"
+                     acp-show-hex="yes"
+                     acp-show-alpha
+                     acp-palette="PALETTE_MATERIAL_CHROME"></div>
+            </div>
+
+            <button class="btn btn-outline-secondary">Your colors
+                <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </button>
+            <div id="color-list" class="d-flex m-2 p-2 flex-wrap">
+                {% for user_color in user_colors %}
+                    <div class="card card-list-item mb-3 m-2">
+                        <div class="card-header" style="background:#{{ user_color.hex }}"></div>
+                        <div class="body">
+                            <h5 class="font-weight-light card-text py-2 px-1">{{ user_color.name }}</h5>
+                            {% if user_color.description %}
+                                <h6 class="font-weight-light card-text px-2">{{ user_color.description }}</h6>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% include 'graph/includes/ajax.html' %}
+
+            // picker wrapper
+            let colorPickerWrapper = $('#picker-wrapper');
+            let colorPicker = $('#picker');
+            // hide picker
+            colorPickerWrapper.hide();
+            // color header (to show color)
+            let colorHeader = $('#picker-header');
+
+            //close wrapper
+            let wrapperClose = $('#picker-wrapper-close');
+
+            // show hide create color
+            let createColor = $('#create-color');
+            // dropdown fot create color menu
+            let createDrop = $('#create-drop');
+
+            //color list block
+            let colorList = $('#color-list');
+
+            //input for color name and description
+            let colorInputName = $('#color-name-input');
+            let colorInputDescription = $('#color-description-input');
+
+            // toggle create menu
+            createDrop.click(function () {
+                createColor.toggle();
+                colorPickerWrapper.hide();
+            });
+
+            // choose color
+            colorHeader.click(function () {
+                colorPickerWrapper.toggle();
+            });
+
+            // close color choose
+            wrapperClose.click(function () {
+                colorPickerWrapper.hide();
+            });
+
+            //edit panel
+            let panelColor = $('#panel-color');
+            let panelText = $('#panel-text');
+            let panelSave = $('#panel-save');
+            let panelClose = $('#panel-close');
+
+            // open color select
+            panelColor.click(function () {
+                colorPickerWrapper.show();
+            });
+
+            // focus name
+            panelText.click(function () {
+                colorInputName.focus();
+            });
+
+            // close panel
+            panelClose.click(function () {
+                createDrop.click();
+            });
+
+            // save color ajax
+            panelSave.click(function () {
+                // check if not null
+                if (colorInputName.val().length > 0) {
+                    colorInputName.removeClass('is-invalid');
+                    let color = AColorPicker.parseColor(colorHeader.attr("data-color"), "hex");    // return "#"
+                    console.log(color);
+                    $.ajax({
+                        url: '{% url 'core:add_color' %}',
+                        method: 'post',
+                        data: {
+                            'color_name': colorInputName.val(),
+                            'color_description': colorInputDescription.val(),
+                            'color_hex': color.substring(1)
+                        },
+                        success: function (d) {
+                            console.log(d['status']);
+                            {# TODO: popup or status place #}
+
+
+                            {% comment %}<div class="card mb-3 m-2" style="min-height: 7rem">
+                        <div class="card-header" style="background:#{{ user_color.hex }}"></div>
+                        <div class="body">
+                            <h5 class="font-weight-light card-text py-2 px-1">{{ user_color.name }}</h5>
+                            {% if user_color.description %}
+                                <h6 class="font-weight-light card-text px-2">{{ user_color.description }}</h6>
+                            {% endif %}
+                        </div>
+                             </div>{% endcomment %}
+                            // add to color list
+                            let cardBlock = $('<div>', {class: 'card card-list-item mb-3 m-2'});
+                            let header = $('<div>', {class: 'card-header', style: 'background:' + color});
+                            let body = $('<div>', {class: 'body'});
+                            let name = $('<h5>', {
+                                class: 'font-weight-light card-text py-2 px-1',
+                                text: colorInputName.val()
+                            });
+                            let description = $('<h6>', {
+                                class: 'font-weight-light card-text px-2',
+                                text: colorInputDescription.val()
+                            });
+
+                            header.appendTo(cardBlock);
+                            body.appendTo(cardBlock);
+                            name.appendTo(body);
+                            description.appendTo(body);
+
+                            cardBlock.appendTo(colorList);
+                            // clear form
+                            colorInputName.val("");
+                            colorInputDescription.val("");
+                        }
+                    });
+                } else {
+                    colorInputName.addClass('is-invalid');
+                }
+            });
+
+            // picker on change
+            AColorPicker.from(colorPicker)
+                .on('change', (picker, color) => {
+                    colorHeader.css('background', color);
+                    colorHeader.attr("data-color", color)
+                });
+
+
+        });
+    </script>
+{% endblock %}

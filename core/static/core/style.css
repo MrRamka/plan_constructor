@@ -156,6 +156,14 @@ body {
     color: #2196F3
 }
 
+.red {
+    color: #FF7675;
+}
+
+.green {
+    color: #55EFC4;
+}
+
 .main {
     width: 80%;
     height: 90%;
@@ -172,10 +180,12 @@ body {
     align-items: flex-end;
     position: relative;
 }
+
 .main-create {
     width: 50%;
     height: 60%;
 }
+
 .mainBlock1 p {
     line-height: 1em;
 }
@@ -187,6 +197,7 @@ body {
     display: block;
     align-items: center;
 }
+
 .vertex {
     width: 200px;
     height: 75px;
@@ -237,8 +248,60 @@ body {
     line-height: 8em;
     font-size: 1em;
 }
+
 .main-navigation {
-    width: 90%;
+    width: 95%;
     margin: auto;
     padding: 1em;
+}
+
+#picker-wrapper {
+    position: absolute;
+    top: 15%;
+    left: 45%;
+    z-index: 10;
+}
+
+#picker-wrapper-close {
+    float: right;
+}
+
+#create-color {
+    width: 20rem;
+}
+
+#edit-panel {
+    width: 18rem;
+}
+
+.card, #edit-panel {
+    margin: auto;
+}
+
+.edit {
+    width: 1.2em;
+}
+
+.last {
+    float: right;
+}
+
+.color-input {
+    border: 0 none;
+}
+
+.color-input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.card {
+    width: 16em;
+    min-height: 7rem;
+}
+.card-list-item {
+    height: 7rem;
+}
+#color-list{
+    overflow: auto;
 }
