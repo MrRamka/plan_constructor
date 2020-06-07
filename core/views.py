@@ -80,7 +80,6 @@ class AddColorView(LoginRequiredMixin, View):
             color_name = request.POST.get('color_name', None)
             color_description = request.POST.get('color_description', None)
             color_hex = request.POST.get('color_hex', None)
-            print(color_name, color_description, color_hex)
             Color.objects.create(
                 author=request.user,
                 name=color_name,

@@ -117,7 +117,6 @@ class AddEdge(LoginRequiredMixin, View):
             node_hash = request.POST.get('node_hash', None)
 
             edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end, library_id=node_hash)
-            print('add: ' + node_hash)
             data = {
                 'status': 'CREATED',
                 'edge_id': edge.id
@@ -129,8 +128,6 @@ class DeleteEdge(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
             edge_id = request.POST.get('edge_id', None)
-            print('remove: ' + edge_id)
-
             edge = Edge.objects.get(library_id=edge_id)
             edge.delete()
 
