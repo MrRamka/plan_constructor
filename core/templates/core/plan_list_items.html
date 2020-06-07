@@ -1,13 +1,19 @@
-<div class="main" id="main" style="width:80%;">
-    <div class="mainBlock1" style="height:100%">
-        <h1>{{ plan_type }} <i class="fas fa-plus-circle"></i></h1>
+<div class="main shadow" id="main">
+    <div class="mainBlock1">
+        <h1 class="font-weight-bold p-2">{{ plan_type }} </h1>
+        <hr/>
+        {#<i class="fas fa-plus-circle"></i>#}
 
         {# TODO add colors #}
         {% for plan in object_list %}
             <div class="card-block-container">
-                <div class="card-block-header"><h5>{{ plan.name }} (v. {{ plan.version }})</h5></div>
+                <div class="card-block-header">
+                    <h5>{{ plan.name }} (v. {{ plan.version }})</h5>
+                </div>
                 <a href="{{ plan.get_absolute_url }}">
-                    <div class="card-block"></div>
+                    <div class="card-block shadow-sm border border-secondary">
+
+                    </div>
                 </a>
             </div>
         {% endfor %}

@@ -1,8 +1,8 @@
 body {
     margin: 0;
     padding: 0;
-    background: white;
-    font-family: sans-serif;
+    background: #FBFCFD;
+    font-family: Roboto, sans-serif;
 }
 
 
@@ -18,6 +18,12 @@ body {
     display: inline-block;
     border-right: 1px solid #E5E5E5;
     padding-top: 2em;
+    background: white;
+}
+
+.leftMenu a {
+    color: black;
+    text-decoration: none;
 }
 
 .leftMenuBlock1 {
@@ -50,6 +56,11 @@ body {
     margin-bottom: 0.4em;
 }
 
+.leftMenuItem:hover {
+    background: #E3F2FD;
+    color: #2196F3;
+}
+
 .selected {
     background: #E3F2FD;
     color: #2196F3;
@@ -67,6 +78,7 @@ body {
 .rightMenu {
     width: 17%;
     height: 100%;
+    background: white;
     display: inline-block;
     border-left: 1px solid #E5E5E5;
 }
@@ -144,21 +156,34 @@ body {
     color: #2196F3
 }
 
+.red {
+    color: #FF7675;
+}
+
+.green {
+    color: #55EFC4;
+}
+
 .main {
-    width: 69%;
-    height: 100%;
+    width: 80%;
+    height: 90%;
     display: inline-block;
+    background: white;
+    margin: auto;
 }
 
 .mainBlock1 {
     width: 100%;
-    height: 20%;
-    padding-left: 6em;
-    padding-top: 1.6em;
-    padding-bottom: 1.6em;
+    height: 100%;
+    padding: 1.5em 4em;
     overflow: auto;
     align-items: flex-end;
     position: relative;
+}
+
+.main-create {
+    width: 50%;
+    height: 60%;
 }
 
 .mainBlock1 p {
@@ -167,24 +192,11 @@ body {
 
 .mainBlock2 {
     overflow: auto;
-    height: 53%;
+    height: 70%;
     background: #f6f7fa;
-    margin-left: 6em;
-    margin-right: 6em;
     display: block;
     align-items: center;
 }
-
-.mainBlock2 td {
-    padding-left: 3em;
-    padding-right: 3em;
-    z-index: 101;
-}
-
-.mainBlock2 tr {
-    z-index: 101;
-}
-
 
 .vertex {
     width: 200px;
@@ -198,51 +210,98 @@ body {
     z-index: 101;
 }
 
-
-.mainBlock3 {
-    width: 100% auto;
-    height: 12%;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    margin-bottom: 5%;
-    padding: 0;
-    position: relative;
-    text-align: right;
-}
-
-
 .btn-big {
     height: 5em;
 }
 
 .card-block-container {
-    height: 10em;
-    width: 14em;
-    margin-right: 1.5em;
-    margin-bottom: 1em;
+    height: 13em;
+    width: 18em;
+    margin: 0.7em;
     display: inline-block;
 }
 
 .card-block {
-    width: 14em;
-    height: 8em;
-    box-shadow: 8px 7px 11px 0px #cecece;
-    border: 1px solid #e1e1e1;
+    /*width: 15em;*/
+    height: 10em;
     position: relative;
     display: block;
-    border-radius: 4px;
+    background: #FAFAFA;
+
+}
+
+.card-block-create {
+    background: white;
+    /*opacity: 0.12;*/
 }
 
 .card-block-header {
-    color: gray;
+    color: #9E9E9E;
     font-size: 0.8em;
     text-align: left;
     height: 2em;
+    margin: 1em 0;
 }
 
 .card-block p {
     text-align: center;
     line-height: 8em;
     font-size: 1em;
+}
 
+.main-navigation {
+    width: 95%;
+    margin: auto;
+    padding: 1em;
+}
+
+#picker-wrapper {
+    position: absolute;
+    top: 15%;
+    left: 45%;
+    z-index: 10;
+}
+
+#picker-wrapper-close {
+    float: right;
+}
+
+#create-color {
+    width: 20rem;
+}
+
+#edit-panel {
+    width: 18rem;
+}
+
+.card, #edit-panel {
+    margin: auto;
+}
+
+.edit {
+    width: 1.2em;
+}
+
+.last {
+    float: right;
+}
+
+.color-input {
+    border: 0 none;
+}
+
+.color-input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.card {
+    width: 16em;
+    min-height: 7rem;
+}
+.card-list-item {
+    height: 7rem;
+}
+#color-list{
+    overflow: auto;
 }

@@ -1,43 +1,48 @@
 <div class="leftMenu">
     <div class="leftMenuBlock1">
-        <h1>{{ request.user.get_full_name }}</h1>
+        <h1 class="p-2">{{ request.user.get_full_name }}</h1>
     </div>
     <div class="LeftMenuBlock2">
-        <div class="leftMenuItem {% if plan_type_all %}selected{% endif %}"><i class="fab fa-accusoft"></i>
-            <a href="{% url 'core:home' %}">
+        <a class="navigation" href="{% url 'core:home' %}">
+            <div class="leftMenuItem {% if plan_type_all %}selected{% endif %}"><i class="fab fa-accusoft"></i>
                 All Plans
-            </a>
-        </div>
+            </div>
+        </a>
+
+        <a class="navigation" href="{% url 'core:create_plan' %}">
+            <div class="leftMenuItem {% if create_plan %} selected{% endif %}"><i class="fas fa-plus"></i>
+                Create
+            </div>
+        </a>
 
 
-        <div class="leftMenuItem {% if plan_type_graph %} selected{% endif %}"><i class="fas fa-chart-line"></i>
-            <a class="navigation" href="{% url 'graph:to_user_graph_list' %}">
+        <a class="navigation" href="{% url 'graph:to_user_graph_list' %}">
+            <div class="leftMenuItem {% if plan_type_graph %} selected{% endif %}"><i class="fas fa-chart-line"></i>
                 Graphs
-            </a>
-        </div>
-
+            </div>
+        </a>
 
         <a class="navigation" href="{% url 'table:to_user_table_list' %}">
             <div class="leftMenuItem {% if plan_type_table %} selected {% endif %}"><i class="fas fa-align-justify"></i>
                 Tables
             </div>
         </a>
+
     </div>
 
 
     <div class="LeftMenuBlock3">
-
-        <div class="leftMenuItem {% if settings %} selected {% endif %}"><i class="fas fa-cog"></i>
-            <a href="">
+        <a href="{% url 'core:settings' %}">
+            <div class="leftMenuItem {% if settings %} selected {% endif %}"><i class="fas fa-cog"></i>
                 Settings
-            </a>
-        </div>
+            </div>
+        </a>
 
-        <div class="leftMenuItem"><i class="fas fa-sign-out-alt"></i>
-            <a href="{% url 'user:logout' %}">
+
+        <a href="{% url 'user:logout' %}">
+            <div class="leftMenuItem"><i class="fas fa-sign-out-alt"></i>
                 Log out
-            </a>
-        </div>
-
+            </div>
+        </a>
     </div>
 </div>

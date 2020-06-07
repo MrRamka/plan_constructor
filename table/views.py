@@ -25,7 +25,7 @@ class TableDetailView(DetailView, LoginRequiredMixin):
     template_name = 'table/table_detail.html'
 
     def get_object(self, queryset=None):
-        return Plan.table_plan_objects.get(plan_slug=self.kwargs['hash'])
+        return Plan.table_plan_objects.get(slug=self.kwargs['hash'])
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
