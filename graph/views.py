@@ -69,6 +69,9 @@ class AddNode(LoginRequiredMixin, View):
                 color=Color.objects.get(id=1),
                 related_plan=Plan.objects.get(id=plan_id)
             )
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
 
             data = {
                 'v_name': vertex.name,

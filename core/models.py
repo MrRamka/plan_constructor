@@ -102,6 +102,7 @@ class Plan(models.Model):
     )
     date_creation = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    last_update = models.DateTimeField(auto_now=True)
 
     # Managers
     objects = Manager()
