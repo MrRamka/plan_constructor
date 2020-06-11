@@ -9,6 +9,7 @@ class Column(models.Model):
     """
     related_plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     column_position = models.PositiveIntegerField()
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return f'{self.related_plan.__str__()} Position: {self.column_position}'
