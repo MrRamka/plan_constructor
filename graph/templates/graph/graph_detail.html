@@ -188,7 +188,8 @@
                             method: 'post',
                             data: {
                                 'node_id': lastNode.data('id'),
-                                'new_node_name': newLabel
+                                'new_node_name': newLabel,
+                                'plan_id': planId
                             },
                             success: function (d) {
                                 console.log(d['status']);
@@ -218,7 +219,8 @@
                         method: 'post',
                         data: {
                             'node_id': lastNode.id(),
-                            'new_node_color': newColorHex
+                            'new_node_color': newColorHex,
+                            'plan_id': planId
                         },
                         success: function (d) {
                             console.log(d['status']);
@@ -245,7 +247,8 @@
                             method: 'post',
                             data: {
                                 'node_id': lastNode.id(),
-                                'new_node_priority': newPriority
+                                'new_node_priority': newPriority,
+                                'plan_id': planId
                             },
                             success: function (d) {
                                 console.log(d['status']);
@@ -293,7 +296,8 @@
                         url: '{% url 'graph:delete_node' %}',
                         method: 'post',
                         data: {
-                            'node_id': nodeId
+                            'node_id': nodeId,
+                            'plan_id': planId
                         },
                         success: function (d) {
                             console.log(d['status']);
@@ -321,7 +325,8 @@
                         url: '{% url 'graph:delete_edge' %}',
                         method: 'post',
                         data: {
-                            'edge_id': lastEdge.id()
+                            'edge_id': lastEdge.id(),
+                            'plan_id': planId
                         },
                         success: function (d) {
                             console.log(d['status']);
@@ -342,7 +347,8 @@
                     data: {
                         'node_hash': addedEles.id(),
                         'node_start': sourceNode.id(),
-                        'node_end': targetNode.id()
+                        'node_end': targetNode.id(),
+                        'plan_id': planId
                     },
 
                     success: function (d) {

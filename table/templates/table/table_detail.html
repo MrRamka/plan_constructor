@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends 'table/main_table.html' %}
 
 {% block title %}
     {{ plan.name }}
@@ -13,11 +13,118 @@
             {% endif %}
             <p class="ml-2">Version: {{ plan.version }}</p>
             <hr/>
+            <div id="navigation">
+                <button id="nav-add-cell" class="btn btn-primary">Add cell</button>
+                <button id="nav-add-column" class="btn btn-primary">Add column</button>
+            </div>
+            <hr/>
+            <div class="d-flex" id="columns">
+                {% for column in columns %}
+                    <div class="m-1 col-1">
+                        <p>{{ column.name }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <hr>
+            <div class="grid-stack" style="background-color: #f6f7fa">
+                {#                <div class="grid-stack-item border border-secondary" data-gs-x="0" data-gs-y="0" data-gs-width="4"#}
+                {#                     data-gs-height="2">#}
+                {#                    <div class="grid-stack-item-content">my first widget</div>#}
+                {#                </div>#}
+                {#                <div class="grid-stack-item border border-secondary" data-gs-x="4" data-gs-y="0" data-gs-width="4"#}
+                {#                     data-gs-height="1">#}
+                {#                    <div class="grid-stack-item-content">another widget!</div>#}
+                {#                </div>#}
+            </div>
         </div>
+
 
     </div>
 
 
-    {% include 'table/includes/right_navigation_menu.html' %}
 
+    {% include 'table/includes/right_navigation_menu_cell.html' %}
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // columns amount
+            let columnsAmount = {{ columns_amount }};
+            let columns = $('#columns');
+            // init lib
+            let grid = GridStack.init({float: true});
+            //navigation
+            let createCellButton = $('#nav-add-cell');
+            let createColumnButton = $('#nav-add-column');
+            // right menu
+            let priorityInput = $('#priority');
+            let nameInput = $("#name");
+            let colorSelect = $('#colorsSelect');
+
+            //set columns
+            {# todo: fix column #}
+            {#grid.column(columnsAmount+5, true);#}
+
+            // menu
+            let cellMenu = $('#cell-menu');
+            let columnMenu = $('#column-menu');
+            columnMenu.hide();
+
+            grid.on('added', function (e, items) {
+                log('added ', items)
+            });
+            grid.on('removed', function (e, items) {
+                log('removed ', items)
+            });
+            grid.on('change', function (e, items) {
+                log('change ', items)
+            });
+
+            function log(type, items) {
+                let str = '';
+                items.forEach(function (item) {
+                    str += ' (x,y)=' + item.x + ',' + item.y;
+                });
+                console.log(type + items.length + ' items.' + str);
+            }
+
+            createCellButton.click(function () {
+                // creating new widget
+                // todo add ajax
+                // todo add css align
+                let newCellParams = {
+                    width: 2,
+                    height: 1,
+                    autoPosition: true,
+
+                    id: "test"
+                };
+                let newCellWidgetWrapper = $('<div>', {class: '', style: 'background: #ff9ff3'});
+                let newCell = $('<div>', {class: 'grid-stack-item-content'});
+                let newName = $('<p>', {class: '', text: 'New cell'});
+                newCell.appendTo(newCellWidgetWrapper);
+                newName.appendTo(newCell);
+                grid.addWidget(newCellWidgetWrapper, newCellParams);
+            });
+
+            createColumnButton.click(function () {
+                let newColumn = $('<div>', {class: 'p-1'});
+                let newName = $('<p>', {class: '', text: 'New Row'});
+                newName.appendTo(newColumn);
+                newColumn.appendTo(columns);
+                columnsAmount += 1;
+                // if true existing widgets will not be updated during a set
+                {#grid.column(columnsAmount, true);#}
+            });
+
+            $('.grid-stack-item').click(function () {
+                let cell = $(this);
+
+                let name = cell.attr('data-name')
+
+            });
+
+        });
+
+    </script>
 {% endblock %}

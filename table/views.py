@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
 
-from core.models import Plan
+from core.models import Plan, Color
+from table.models import Column, Cell
 
 
 class TableListView(ListView, LoginRequiredMixin):
@@ -31,5 +32,22 @@ class TableDetailView(DetailView, LoginRequiredMixin):
         context_data = super().get_context_data(**kwargs)
         # Hover navigation item
         context_data['plan_type_table'] = True
+
+        # columns
+        columns = Column.objects.filter(related_plan=self.get_object())
+        context_data['columns'] = columns
+        context_data['columns_amount'] = len(columns)
+
+        # cells
+        if columns:
+            cells = Cell.objects.filter(related_plan=self.get_object())
+            context_data['cells'] = cells
+
+        # custom color
+        custom_colors = Color.custom_color.filter(author=self.request.user)
+        context_data['custom_colors'] = custom_colors
+        # Add colors
+        colors = Color.base_colors.all()
+        context_data['colors'] = colors
 
         return context_data
