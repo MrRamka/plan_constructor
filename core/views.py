@@ -20,8 +20,10 @@ class HomeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        graph_plans = Plan.graph_plan_objects.filter().order_by('last_update')[:self.items_amount]
-        table_plans = Plan.table_plan_objects.filter().order_by('last_update')[:self.items_amount]
+        graph_plans = Plan.graph_plan_objects.filter(author=self.request.user).order_by('last_update')[
+                      :self.items_amount]
+        table_plans = Plan.table_plan_objects.filter(author=self.request.user).order_by('last_update')[
+                      :self.items_amount]
 
         context_data['graph_plans'] = graph_plans
         context_data['table_plans'] = table_plans
