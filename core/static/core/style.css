@@ -240,22 +240,29 @@ body {
 }
 
 .card-block-name {
-    height: 30%;
+    height: 100%;
+    width: 100%;
     text-align: center;
+    display: inline-block;
     font-family: 'Fira Sans', Helvetica, Roboto, sans-serif;
 }
-.card-block-last-update{
+
+.card-block p {
+    text-align: center;
+    font-size: 2em;
+    display: inline-block;
+    vertical-align: middle;
+}
+.name-inner{
+    margin: auto;
+    font-size: 24px;
+}
+.card-block-last-update {
     position: absolute;
     top: 80%;
     width: 16em;
     float: right;
     text-align: right;
-}
-
-.card-block p {
-    text-align: center;
-    line-height: 4em;
-    font-size: 2em;
 }
 
 .main-navigation {
