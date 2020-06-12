@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'core',
     'table',
     'graph',
-
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
