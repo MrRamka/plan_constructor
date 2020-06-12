@@ -4,6 +4,51 @@
     Home page
 {% endblock %}
 {% block container %}
+    {% load humanize %}
+    <div class="main shadow" id="main">
+        <div class="mainBlock1">
+            <h2 class="font-weight-light p-2">Graph plans</h2>
+            <hr/>
+            {% for plan in graph_plans %}
+                <div class="card-block-container">
+                    <a href="{{ plan.get_absolute_url }}">
+                        <div class="card-block p-2">
+                            <div class="mx-1 card-block-version">version: {{ plan.version }}</div>
+                            <div class="card-block-name"><p>{{ plan.name }}</p></div>
+                            <div class="mx-1 card-block-last-update">updated {{ plan.last_update|naturalday }}</div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
 
+            <h2 class="font-weight-light p-2 my-3">Table plans</h2>
+            <hr/>
+            {% for plan in table_plans %}
+                <div class="card-block-container">
+                    <a href="{{ plan.get_absolute_url }}">
+                        <div class="card-block p-2">
+                            <div class="mx-1 card-block-version">version: {{ plan.version }}</div>
+                            <div class="card-block-name"><p>{{ plan.name }}</p></div>
+                            <div class="mx-1 card-block-last-update">updated {{ plan.last_update|naturalday }}</div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+
+            {% comment %}<h2 class="font-weight-light p-2 my-3">Examples</h2>
+            <hr/>
+            {% for plan in examples %}
+                <div class="card-block-container">
+                    <a href="{{ plan.get_absolute_url }}">
+                        <div class="card-block p-2">
+                            <div class="mx-1 card-block-version">version: {{ plan.version }}</div>
+                            <div class="card-block-name"><p>{{ plan.name }}</p></div>
+                            <div class="mx-1 card-block-last-update">updated {{ plan.last_update|naturalday }}</div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}{% endcomment %}
+        </div>
+    </div>
 
 {% endblock %}
