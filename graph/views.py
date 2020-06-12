@@ -69,6 +69,9 @@ class AddNode(LoginRequiredMixin, View):
                 color=Color.objects.get(id=1),
                 related_plan=Plan.objects.get(id=plan_id)
             )
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
 
             data = {
                 'v_name': vertex.name,
@@ -83,11 +86,17 @@ class AddNode(LoginRequiredMixin, View):
 class ChangeNodeLabel(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
+            plan_id = request.POST.get('plan_id', None)
             node_id = request.POST.get('node_id', None)
             node_label = request.POST.get('new_node_name', None)
             node = Vertex.objects.get(id=node_id)
             node.name = node_label
             node.save()
+
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
+
             data = {
                 'status': 'OK'
             }
@@ -98,11 +107,17 @@ class ChangeNodeLabel(LoginRequiredMixin, View):
 class ChangeNodePriority(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
+            plan_id = request.POST.get('plan_id', None)
             node_id = request.POST.get('node_id', None)
             new_node_priority = request.POST.get('new_node_priority', None)
             node = Vertex.objects.get(id=node_id)
             node.priority = new_node_priority
             node.save()
+
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
+
             data = {
                 'status': 'OK'
             }
@@ -112,11 +127,17 @@ class ChangeNodePriority(LoginRequiredMixin, View):
 class AddEdge(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
+            plan_id = request.POST.get('plan_id', None)
             node_start = request.POST.get('node_start', None)
             node_end = request.POST.get('node_end', None)
             node_hash = request.POST.get('node_hash', None)
 
             edge = Edge.objects.create(start_vertex_id=node_start, end_vertex_id=node_end, library_id=node_hash)
+
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
+
             data = {
                 'status': 'CREATED',
                 'edge_id': edge.id
@@ -127,9 +148,14 @@ class AddEdge(LoginRequiredMixin, View):
 class DeleteEdge(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
+            plan_id = request.POST.get('plan_id', None)
             edge_id = request.POST.get('edge_id', None)
             edge = Edge.objects.get(library_id=edge_id)
             edge.delete()
+
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
 
             data = {
                 'status': 'DELETED'
@@ -140,12 +166,17 @@ class DeleteEdge(LoginRequiredMixin, View):
 class UpdateColor(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
+            plan_id = request.POST.get('plan_id', None)
             node_id = request.POST.get('node_id', None)
             new_node_color = request.POST.get('new_node_color', None)
             node = Vertex.objects.get(id=node_id)
             color = Color.objects.get(hex=new_node_color)
             node.color = color
             node.save()
+
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
             data = {
                 'status': 'OK'
             }
@@ -155,9 +186,15 @@ class UpdateColor(LoginRequiredMixin, View):
 class DeleteNode(LoginRequiredMixin, View):
     def post(self, request):
         if request.is_ajax():
+            plan_id = request.POST.get('plan_id', None)
             node_id = request.POST.get('node_id', None)
             node = Vertex.objects.get(id=node_id)
             node.delete()
+
+            # update last modified
+            plan = Plan.objects.get(id=plan_id)
+            plan.save()
+
             data = {
                 'status': 'DELETED'
             }

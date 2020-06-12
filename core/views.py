@@ -15,9 +15,16 @@ class HomeView(LoginRequiredMixin, TemplateView):
     Main page with all main information
     """
     template_name = 'core/home.html'
+    items_amount = 4
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
+        graph_plans = Plan.graph_plan_objects.filter().order_by('last_update')[:self.items_amount]
+        table_plans = Plan.table_plan_objects.filter().order_by('last_update')[:self.items_amount]
+
+        context_data['graph_plans'] = graph_plans
+        context_data['table_plans'] = table_plans
 
         context_data['plan_type_all'] = True
         context_data['plan_type'] = 'All plans'

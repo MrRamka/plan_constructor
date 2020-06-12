@@ -16,4 +16,4 @@ class CustomColorAdmin(admin.ModelAdmin):
 
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ['author', 'name', 'type', 'version', 'date_creation']
+    list_display = ['author', 'name', 'type', 'version', 'date_creation', 'last_update']

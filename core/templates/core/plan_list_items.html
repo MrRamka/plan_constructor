@@ -1,18 +1,17 @@
+{% load humanize %}
 <div class="main shadow" id="main">
     <div class="mainBlock1">
         <h1 class="font-weight-bold p-2">{{ plan_type }} </h1>
         <hr/>
         {#<i class="fas fa-plus-circle"></i>#}
 
-        {# TODO add colors #}
         {% for plan in object_list %}
             <div class="card-block-container">
-                <div class="card-block-header">
-                    <h5>{{ plan.name }} (v. {{ plan.version }})</h5>
-                </div>
                 <a href="{{ plan.get_absolute_url }}">
-                    <div class="card-block shadow-sm border border-secondary">
-
+                    <div class="card-block p-2">
+                        <div class="mx-1 card-block-version">version: {{ plan.version }}</div>
+                        <div class="card-block-name"><p>{{ plan.name }}</p></div>
+                        <div class="mx-1 card-block-last-update">updated {{ plan.last_update|naturalday }}</div>
                     </div>
                 </a>
             </div>
