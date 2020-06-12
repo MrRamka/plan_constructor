@@ -215,11 +215,11 @@ body {
 }
 
 .card-block-container {
-    height: 11em;
+    height: 10em;
     width: 18em;
     margin: 0.7em;
     display: inline-block;
-    color: #f94a7a;
+    color: #4A9FF9;
     border: 2px solid;
     border-radius: 4px;
 }
@@ -236,20 +236,17 @@ body {
 }
 
 .card-block-version {
-    color: #f94a7a;
     position: absolute;
 }
 
 .card-block-name {
-    color: #f94a7a;
-    height: 4em;
+    height: 30%;
     text-align: center;
     font-family: 'Fira Sans', Helvetica, Roboto, sans-serif;
 }
 .card-block-last-update{
-    color: #f94a7a;
     position: absolute;
-    top: 9em;
+    top: 80%;
     width: 16em;
     float: right;
     text-align: right;
@@ -257,7 +254,7 @@ body {
 
 .card-block p {
     text-align: center;
-    line-height: 5em;
+    line-height: 4em;
     font-size: 2em;
 }
 
