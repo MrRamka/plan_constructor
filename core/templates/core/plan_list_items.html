@@ -10,7 +10,7 @@
                 <a href="{{ plan.get_absolute_url }}">
                     <div class="card-block p-2">
                         <div class="mx-1 card-block-version">version: {{ plan.version }}</div>
-                        <div class="card-block-name"><p>{{ plan.name }}</p></div>
+                        <div class="card-block-name d-flex"><div class="name-inner">{{ plan.name }}</div></div>
                         <div class="mx-1 card-block-last-update">updated {{ plan.last_update|naturalday }}</div>
                     </div>
                 </a>
